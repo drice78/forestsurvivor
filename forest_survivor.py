@@ -31,41 +31,55 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 
 /* ── Name screen ── */
 #nameScreen { position:fixed; inset:0; background:#050e05; z-index:300;
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; }
-#nameScreen h1 { font-size:clamp(14px,3vw,22px); color:#f0c040; text-shadow:0 0 20px #f0a000; }
-#nameScreen h2 { font-size:clamp(8px,1.5vw,11px); color:#78c858; }
-#nameScreen p  { font-size:clamp(6px,1vw,8px); color:#80a880; text-align:center;
-  max-width:440px; line-height:1.9; }
+  display:flex; flex-direction:row; align-items:stretch; }
+
+#nameLeft { flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:11px; padding:20px; }
+#nameLeft h1 { font-size:clamp(13px,2.5vw,20px); color:#f0c040; text-shadow:0 0 20px #f0a000; }
+#nameLeft h2 { font-size:clamp(7px,1.3vw,10px); color:#78c858; }
+#nameLeft p  { font-size:clamp(5px,.9vw,7px); color:#80a880; text-align:center;
+  max-width:400px; line-height:1.9; }
 #nameInput { background:#0a1a0a; border:2px solid #f0c040; color:#f0f0a0;
-  font-family:inherit; font-size:16px; padding:8px 14px; border-radius:4px;
-  text-align:center; width:280px; outline:none; }
+  font-family:inherit; font-size:15px; padding:7px 12px; border-radius:4px;
+  text-align:center; width:260px; outline:none; }
 #nameInput:focus { box-shadow:0 0 12px #f0a00050; }
 
-/* night slider row */
 .sliderRow { display:flex; align-items:center; gap:10px; }
-.sliderRow label { font-size:7px; color:#f0c040; }
-#nightSlider { -webkit-appearance:none; width:140px; height:6px; border-radius:3px;
+.sliderRow label { font-size:6px; color:#f0c040; }
+#nightSlider { -webkit-appearance:none; width:130px; height:6px; border-radius:3px;
   background:#1a4a1a; outline:none; cursor:pointer; }
-#nightSlider::-webkit-slider-thumb { -webkit-appearance:none; width:16px; height:16px;
+#nightSlider::-webkit-slider-thumb { -webkit-appearance:none; width:15px; height:15px;
   border-radius:50%; background:#f0c040; cursor:pointer; border:2px solid #0a1a0a; }
-#nightsVal { font-size:11px; color:#f0c040; min-width:30px; text-align:center; }
-.diffRow { display:flex; gap:6px; }
-.diffBtn { font-family:inherit; font-size:7px; padding:5px 10px;
+#nightsVal { font-size:10px; color:#f0c040; min-width:28px; text-align:center; }
+.diffRow { display:flex; gap:5px; }
+.diffBtn { font-family:inherit; font-size:6px; padding:4px 9px;
   border:2px solid #2d5a1b; background:#0d280d; color:#90d878;
   cursor:pointer; border-radius:3px; }
 .diffBtn.sel { background:#1a5a1a; border-color:#f0c040; color:#f0c040; }
 
+/* leaderboard panel */
+#nameRight { width:240px; background:#0a1a0a; border-left:2px solid #2d5a1b;
+  display:flex; flex-direction:column; padding:12px; gap:6px; overflow-y:auto; }
+#nameRight h3 { font-size:8px; color:#f0c040; text-align:center; margin-bottom:4px; }
+.lbRow { display:flex; justify-content:space-between; font-size:7px; padding:4px 6px;
+  border-bottom:1px solid #1a3a1a; }
+.lbRow.top1 { color:#f0c040; }
+.lbRow.top2 { color:#c0c0c0; }
+.lbRow.top3 { color:#c08040; }
+#lbEmpty { font-size:6px; color:#507050; text-align:center; padding:12px; }
+.lbLegend { font-size:5px; color:#507050; line-height:1.8; margin-top:auto; }
+
 /* ── App layout ── */
 #app { display:none; flex-direction:column; width:100vw; height:100vh; }
 #topBar { height:30px; background:#0a1f0a; border-bottom:2px solid #2d5a1b;
-  display:flex; align-items:center; padding:0 10px; gap:18px; flex-shrink:0; }
-#topTitle { font-size:9px; color:#f0c040; }
-#timeDisp { font-size:8px; color:#e0d0a0; }
-#nightCtr { font-size:8px; color:#c0d8ff; margin-left:auto; }
+  display:flex; align-items:center; padding:0 10px; gap:16px; flex-shrink:0; }
+#topTitle  { font-size:9px; color:#f0c040; }
+#timeDisp  { font-size:8px; color:#e0d0a0; }
+#blessingDisp { font-size:7px; color:#f0c040; }
+#nightCtr  { font-size:8px; color:#c0d8ff; margin-left:auto; }
+#scoreDisp { font-size:7px; color:#a0f0a0; }
 #rupeeDisp { font-size:8px; color:#00e8ff; }
-#boatInd   { font-size:8px; color:#60b8ff; }
 
-/* main row */
 #mainRow { display:flex; flex:1; overflow:hidden; }
 #canvasWrap { position:relative; flex:1; overflow:hidden; background:#0a1a0a; }
 #gameCanvas { display:block; image-rendering:pixelated; }
@@ -76,21 +90,40 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
   background:#111; border:1px solid #333; border-radius:3px; z-index:3; }
 #timefill { height:100%; border-radius:3px; transition:width .4s,background .8s; }
 
+/* Triforce flash effect */
+#triFlash { position:absolute; inset:0; pointer-events:none; z-index:10;
+  background:radial-gradient(circle at center,rgba(255,220,0,.7) 0%,rgba(240,180,0,.3) 50%,transparent 100%);
+  display:none; }
+#triFlash.on { display:block; animation:triPulse 3s ease-out forwards; }
+@keyframes triPulse {
+  0%   { opacity:0; transform:scale(.8); }
+  15%  { opacity:1; transform:scale(1.05); }
+  40%  { opacity:.9; }
+  100% { opacity:0; transform:scale(1.1); }
+}
+/* Triforce blessing golden border */
+#canvasWrap.blessed { box-shadow:inset 0 0 20px rgba(240,192,0,.5); }
+
 /* UI panel */
-#uiPanel { width:210px; background:#090f09; border-left:2px solid #2d5a1b;
+#uiPanel { width:220px; background:#090f09; border-left:2px solid #2d5a1b;
   display:flex; flex-direction:column; padding:6px; gap:5px; overflow-y:auto; flex-shrink:0; }
 .uiBox { background:#0d1f0d; border:1px solid #1e4a1e; border-radius:3px; padding:5px; }
 .uiLbl { font-size:6px; color:#f0c040; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; }
 .uiVal { font-size:9px; color:#90d878; }
-.heart { font-size:13px; line-height:1; }
+.heart { font-size:12px; line-height:1; }
 #heartsRow { display:flex; flex-wrap:wrap; gap:1px; margin-top:2px; }
-#invList { max-height:150px; overflow-y:auto; }
+#invList { max-height:130px; overflow-y:auto; }
 .invItem { font-size:7px; padding:3px 4px; border:1px solid #1a3a1a; margin-bottom:2px;
   border-radius:2px; cursor:pointer; color:#a8c8a8; display:flex; align-items:center; gap:3px; }
 .invItem:hover { border-color:#f0c040; color:#f0e060; }
 .invItem.eq { border-color:#4090f0; color:#80c0ff; }
-#tfDisp { font-size:13px; letter-spacing:4px; margin-top:2px; }
-#opStatus { font-size:7px; color:#a0c8a0; line-height:1.8; }
+#tfDisp { font-size:12px; letter-spacing:4px; margin-top:2px; }
+#opStatus { font-size:6px; color:#a0c8a0; line-height:1.9; }
+
+/* Minimap */
+#minimap { display:block; margin:0 auto; border:1px solid #2d5a1b;
+  border-radius:2px; image-rendering:pixelated; }
+.mmLegend { font-size:5px; color:#507050; line-height:1.9; margin-top:3px; }
 
 /* bottom row */
 #bottomRow { height:95px; background:#050e05; border-top:2px solid #2d5a1b;
@@ -109,8 +142,12 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 .btn-gold:hover { background:#2a2000; }
 .btn-red  { border-color:#7a2020; color:#f08080; background:#1a0808; }
 .btn-red:hover { background:#2a1010; }
-.btn-blue { border-color:#204080; color:#80c0ff; background:#081020; }
-.btn-blue:hover { background:#102030; }
+.btn-tri  { border-color:#c09020; color:#f0c040; background:#1a1400;
+  animation:glowBtn 1.5s ease-in-out infinite; }
+@keyframes glowBtn {
+  0%,100% { box-shadow:none; }
+  50% { box-shadow:0 0 10px rgba(240,192,0,.6); }
+}
 
 /* overlay */
 #overlay { display:none; position:absolute; inset:0; background:rgba(0,0,0,.88);
@@ -127,7 +164,6 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 .mi { color:#90d878; } .md { color:#f07878; } .mw { color:#f0c040; }
 .ml { color:#c090f0; font-style:italic; } .ms { color:#60e8ff; }
 
-/* scrollbar */
 ::-webkit-scrollbar { width:4px; }
 ::-webkit-scrollbar-track { background:#050e05; }
 ::-webkit-scrollbar-thumb { background:#2d5a1b; border-radius:2px; }
@@ -137,36 +173,52 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 
 <!-- ══════════ NAME / SETTINGS SCREEN ══════════ -->
 <div id="nameScreen">
-  <h1>🌲 FOREST SURVIVOR 🌲</h1>
-  <h2>— A Zelda-Themed Tale —</h2>
-  <p>Stranded deep in the cursed Hyrulean forest, you must survive until rescue arrives.<br>
-     Brave the monsters, unlock outposts, find the Triforce — and make it home!</p>
+  <div id="nameLeft">
+    <h1>🌲 FOREST SURVIVOR 🌲</h1>
+    <h2>— A Zelda-Themed Tale —</h2>
+    <p>Stranded in the cursed Hyrulean forest, survive until rescue arrives.<br>
+       Brave the monsters, unlock outposts, find the Triforce!</p>
 
-  <input id="nameInput" type="text" placeholder="Enter your hero's name..." maxlength="12" />
+    <input id="nameInput" type="text" placeholder="Enter hero name..." maxlength="12" />
 
-  <div class="sliderRow">
-    <label>Survival Nights:</label>
-    <input id="nightSlider" type="range" min="10" max="200" value="100"
-      oninput="document.getElementById('nightsVal').textContent=this.value" />
-    <span id="nightsVal">100</span>
+    <div class="sliderRow">
+      <label>Survival Nights:</label>
+      <input id="nightSlider" type="range" min="10" max="200" value="100"
+        oninput="document.getElementById('nightsVal').textContent=this.value" />
+      <span id="nightsVal">100</span>
+    </div>
+
+    <div class="sliderRow">
+      <label>Difficulty:</label>
+      <div class="diffRow">
+        <button class="diffBtn" id="dEasy"  onclick="setDiff('easy')">Easy</button>
+        <button class="diffBtn sel" id="dNorm" onclick="setDiff('normal')">Normal</button>
+        <button class="diffBtn" id="dHard"  onclick="setDiff('hard')">Hard</button>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" onclick="startGame()"
+      style="width:210px;font-size:9px;padding:9px;">⚔️ BEGIN ADVENTURE</button>
+
+    <p>Arrow Keys / WASD · <span style="color:#f0c040">I</span>=Inventory
+       <span style="color:#f0c040">F</span>=Forage
+       <span style="color:#f0c040">R</span>=Rest
+       <span style="color:#f0c040">Space</span>=Look<br>
+       🪓 Stone Axe (Wood+Stone) chops trees &nbsp;·&nbsp; 🚣 Find Boats to sail water<br>
+       🔱 Collect all 3 Triforce pieces for a special blessing!</p>
   </div>
 
-  <div class="sliderRow" style="gap:6px">
-    <label>Difficulty:</label>
-    <div class="diffRow">
-      <button class="diffBtn" id="dEasy"   onclick="setDiff('easy')">Easy</button>
-      <button class="diffBtn sel" id="dNorm" onclick="setDiff('normal')">Normal</button>
-      <button class="diffBtn" id="dHard"   onclick="setDiff('hard')">Hard</button>
+  <!-- Leaderboard panel -->
+  <div id="nameRight">
+    <h3>🏆 HIGH SCORES</h3>
+    <div id="lbList"><div id="lbEmpty">No scores yet.<br>Be the first survivor!</div></div>
+    <div class="lbLegend">
+      Score = Nights×50 + Rupees<br>
+      + Triforce pieces × 300<br>
+      + Outposts × 150<br>
+      × Difficulty bonus
     </div>
   </div>
-
-  <button class="btn btn-gold" onclick="startGame()" style="width:210px;font-size:9px;padding:9px;">⚔️ BEGIN ADVENTURE</button>
-  <p>Arrow Keys / WASD to move &nbsp;·&nbsp; Step on items to collect them<br>
-     <span style="color:#f0c040">I</span>=Inventory &nbsp;
-     <span style="color:#f0c040">F</span>=Forage &nbsp;
-     <span style="color:#f0c040">R</span>=Rest &nbsp;
-     <span style="color:#f0c040">Space</span>=Look Around<br>
-     🪓 Craft a Stone Axe to chop trees &nbsp;·&nbsp; 🚣 Find a Boat to sail water</p>
 </div>
 
 <!-- ══════════ MAIN APP ══════════ -->
@@ -174,8 +226,9 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
   <div id="topBar">
     <div id="topTitle">🌲 Forest Survivor</div>
     <div id="timeDisp">☀️ Day 1 · Morning</div>
-    <div id="boatInd"></div>
+    <div id="blessingDisp"></div>
     <div id="nightCtr">Night: 0 / 100</div>
+    <div id="scoreDisp">⭐ 0</div>
     <div id="rupeeDisp">💎 0</div>
   </div>
 
@@ -183,6 +236,7 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
     <div id="canvasWrap">
       <canvas id="gameCanvas"></canvas>
       <div id="nightVig"></div>
+      <div id="triFlash"></div>
       <div id="timebar"><div id="timefill"></div></div>
       <div id="overlay">
         <div id="oBox">
@@ -216,10 +270,25 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
       <div class="uiBox">
         <div class="uiLbl">Triforce Quest</div>
         <div id="tfDisp">△△△</div>
+        <div id="blessingBar" style="display:none;font-size:6px;color:#f0c040;margin-top:3px;"></div>
       </div>
       <div class="uiBox">
         <div class="uiLbl">Outposts</div>
-        <div id="opStatus">🔒🔒🔒🔒🔒</div>
+        <div id="opStatus"></div>
+      </div>
+      <!-- Minimap -->
+      <div class="uiBox">
+        <div class="uiLbl">Minimap</div>
+        <canvas id="minimap" width="160" height="160"></canvas>
+        <div class="mmLegend">
+          <span style="color:#fff">■</span> You &nbsp;
+          <span style="color:#00ffcc">■</span> Camp &nbsp;
+          <span style="color:#ff4040">■</span> Locked<br>
+          <span style="color:#00ff80">■</span> Open &nbsp;
+          <span style="color:#f0c040">·</span> Chest &nbsp;
+          <span style="color:#ff8800">·</span> Key &nbsp;
+          <span style="color:#ffff00">✦</span> Tri
+        </div>
       </div>
     </div>
   </div>
@@ -243,20 +312,20 @@ const MW=80, MH=80;
 const TS=40;
 const ACT_PER_HOUR=4;
 const DAY_START=6, DAY_END=20;
+const MM_S=2; // minimap pixels per tile
 
 const T={GR:0,TR:1,DT:2,WA:3,ST:4,SA:5};
 const E={CHEST:'chest',KEY:'key',OUTPOST:'outpost',CAMP:'camp',TRI:'triforce',
-         BOAT:'boat',
-         BOK:'bokoblin',KEE:'keese',SKU:'skulltula',LIZ:'lizalfos',
+         BOAT:'boat',BOK:'bokoblin',KEE:'keese',SKU:'skulltula',LIZ:'lizalfos',
          DEER:'deer',RAB:'rabbit',FOX:'fox'};
 
-// difficulty multipliers  [monHp, monAtk, spawnMult]
-const DIFF_MULT={easy:[0.55,0.55,0.6], normal:[0.80,0.75,1.0], hard:[1.15,1.10,1.4]};
+const DIFF_MULT={easy:[0.55,0.55,0.6,1.0], normal:[0.80,0.75,1.0,1.5], hard:[1.15,1.10,1.4,2.0]};
 let diffKey='normal';
 function setDiff(k){
   diffKey=k;
   ['easy','normal','hard'].forEach(d=>{
-    document.getElementById('d'+d.charAt(0).toUpperCase()+d.slice(1)).classList.toggle('sel',d===k);
+    const el=document.getElementById('d'+d.charAt(0).toUpperCase()+d.slice(1));
+    if(el) el.classList.toggle('sel',d===k);
   });
 }
 
@@ -264,10 +333,10 @@ function setDiff(k){
 const ITEMS={
   'Wooden Sword':    {ic:'⚔️', tp:'weapon', atk:1,  desc:'A simple carved sword.'},
   'Iron Sword':      {ic:'⚔️', tp:'weapon', atk:2,  desc:'A sturdy iron blade.'},
-  'Master Sword':    {ic:'⚔️', tp:'weapon', atk:5,  desc:"The sacred blade of evil's bane!", rare:true},
+  'Master Sword':    {ic:'⚔️', tp:'weapon', atk:5,  desc:"The sacred blade of evil's bane!"},
   'Deku Stick':      {ic:'🪵', tp:'weapon', atk:1,  desc:'A dried Deku stick.'},
   'Stone Axe':       {ic:'🪓', tp:'axe',    atk:2,  desc:'Chop trees AND fight! Equip to cut through forest.'},
-  'Hylian Shield':   {ic:'🛡️', tp:'armor',  def:3,  desc:'The legendary Hylian Shield!', rare:true},
+  'Hylian Shield':   {ic:'🛡️', tp:'armor',  def:3,  desc:'The legendary Hylian Shield!'},
   'Iron Shield':     {ic:'🛡️', tp:'armor',  def:2,  desc:'A solid iron shield.'},
   'Wooden Shield':   {ic:'🛡️', tp:'armor',  def:1,  desc:'A basic wooden shield.'},
   'Red Potion':      {ic:'🧪', tp:'use',    heal:4, desc:'Restores 2 hearts.'},
@@ -296,27 +365,25 @@ const ITEMS={
   'Triforce of Courage': {ic:'🔱', tp:'tri', piece:2, desc:'A shard of the Triforce of Courage!'},
 };
 
-// ── Crafting ───────────────────────────────────────────────
 const RECIPES=[
-  {result:'Stone Axe',    needs:['Wood','Stone'],           desc:'Chop trees & fight monsters'},
-  {result:'Deku Stick',   needs:['Wood','Wood'],            desc:'Basic weapon'},
-  {result:'Wooden Shield',needs:['Wood','Wood','Wood'],     desc:'Light defense'},
-  {result:'Iron Sword',   needs:['Monster Fang','Stone','Wood'], desc:'Strong blade'},
-  {result:'Red Potion',   needs:['Stamella Shroom','Berries'],   desc:'Healing potion'},
-  {result:'Map Fragment', needs:['Spider Silk','Keese Wing'],    desc:'Reveals map area'},
+  {result:'Stone Axe',    needs:['Wood','Stone'],              desc:'Chop trees & fight'},
+  {result:'Deku Stick',   needs:['Wood','Wood'],               desc:'Basic weapon'},
+  {result:'Wooden Shield',needs:['Wood','Wood','Wood'],        desc:'Light defense'},
+  {result:'Iron Sword',   needs:['Monster Fang','Stone','Wood'],desc:'Strong blade'},
+  {result:'Red Potion',   needs:['Stamella Shroom','Berries'], desc:'Healing potion'},
+  {result:'Map Fragment', needs:['Spider Silk','Keese Wing'],  desc:'Reveals map area'},
 ];
 
 const OP_NAMES=['Oaken','Hollow','Grimrock','Duskwood','Zephyr'];
 
 const LORE=[
-  "The ancient trees whisper... Three goddesses hid the Triforce here for safekeeping.",
-  "Carved into bark: 'Monsters grow bolder with every passing night. Seek the outposts.'",
-  "A faded note: 'The five keys were scattered by the guardians. Search everywhere.'",
-  "Stone inscription: 'He who unites the Triforce shall overcome the curse of this forest.'",
-  "Old journal: 'On night 50 the Lizalfos appeared. I hid in Outpost Grimrock for days...'",
+  "The ancient trees whisper... Three goddesses hid the Triforce here for safekeeping. Find all three pieces.",
+  "Carved into bark: 'Monsters grow bolder each night. Seek the outposts for shelter and safety.'",
+  "A faded note: 'The five keys were scattered by the forest guardians. Search everywhere — in chests, near ruins.'",
+  "Stone inscription: 'He who unites the Triforce shall be blessed by the Golden Power of the Three Goddesses.'",
+  "Old journal entry: 'Night 50 brought Lizalfos. Only the lantern kept them at bay. Craft one early!'",
 ];
 
-// ── Monster base stats (nerfed from v1) ────────────────────
 const MON={
   bokoblin: {name:'Bokoblin', ic:'👺', hp:4,  atk:1, def:0, rMin:5,  rMax:12, drops:['Monster Fang','Berries','Wood']},
   keese:    {name:'Keese',    ic:'🦇', hp:2,  atk:1, def:0, rMin:2,  rMax:7,  drops:['Keese Wing']},
@@ -336,36 +403,96 @@ const SHOP=[
   {name:'Boat',            price:60},
 ];
 
+// ── Seeded noise for terrain ────────────────────────────────
+let _nSeed=0;
+function setNoiseSeed(s){_nSeed=s;}
+function noise(x,y){
+  const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi;
+  const s=_nSeed;
+  function ph(a,b){let n=Math.sin(a*127.1+b*311.7+s*0.937)*43758.5453;return n-Math.floor(n);}
+  const sm=t=>t*t*(3-2*t),lerp=(a,b,t)=>a+t*(b-a);
+  return lerp(lerp(ph(xi,yi),ph(xi+1,yi),sm(xf)),lerp(ph(xi,yi+1),ph(xi+1,yi+1),sm(xf)),sm(yf));
+}
+
 // ╔══════════════════════════════════════════════════════════╗
 // ║                   GAME STATE                            ║
 // ╚══════════════════════════════════════════════════════════╝
 let G={};
 
-function newGame(name, totalNights, diff){
+function newGame(name,totalNights,diff){
+  setNoiseSeed(Math.floor(Math.random()*999983));
   const md=genMap();
   G={
-    screen:'play',
-    totalNights,
-    diff,
+    screen:'play', totalNights, diff,
     pl:{
       name, x:md.cx, y:md.cy,
-      hp:12, maxHp:12,
-      atk:1, def:0,
-      rupees:10,
+      hp:12, maxHp:12, atk:1, def:0, rupees:10,
       inv:[], eq:{w:null,a:null},
-      hasFairy:false, hasLantern:false, hasBoat:false, hasAxe:false,
-      onWater:false,
+      hasFairy:false, hasLantern:false, hasBoat:false, hasAxe:false, onWater:false,
     },
-    map:md.tiles,
-    ents:md.ents,
+    map:md.tiles, ents:md.ents,
     fog:Array.from({length:MH},()=>Array(MW).fill(true)),
     time:{hour:8, acts:0, night:0, isNight:false},
     triforce:[false,false,false],
+    triforceBlessing:0,
     opOpen:[false,false,false,false,false],
-    combat:null,
-    done:false,
+    combat:null, done:false,
   };
   reveal(md.cx,md.cy,4);
+}
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║               HIGH SCORE SYSTEM                         ║
+// ╚══════════════════════════════════════════════════════════╝
+function calcScore(){
+  const dm=DIFF_MULT[G.diff]||DIFF_MULT.normal;
+  const base=G.time.night*50 + G.pl.rupees
+            + G.triforce.filter(t=>t).length*300
+            + G.opOpen.filter(u=>u).length*150;
+  return Math.floor(base*dm[3]);
+}
+
+function loadScores(){
+  try{ return JSON.parse(localStorage.getItem('fsSurvivorScores')||'[]'); }
+  catch{ return []; }
+}
+
+function saveScore(){
+  const sc=calcScore();
+  const scores=loadScores();
+  scores.push({
+    name:G.pl.name, score:sc, nights:G.time.night,
+    total:G.totalNights, diff:G.diff,
+    tf:G.triforce.filter(t=>t).length,
+    op:G.opOpen.filter(u=>u).length,
+    date:new Date().toLocaleDateString()
+  });
+  scores.sort((a,b)=>b.score-a.score);
+  scores.splice(10);
+  localStorage.setItem('fsSurvivorScores',JSON.stringify(scores));
+  return sc;
+}
+
+function renderLeaderboard(){
+  const scores=loadScores();
+  const list=document.getElementById('lbList');
+  const empty=document.getElementById('lbEmpty');
+  if(!scores.length){
+    if(empty) empty.style.display='block';
+    return;
+  }
+  if(empty) empty.style.display='none';
+  const diffIcons={easy:'🟢',normal:'🟡',hard:'🔴'};
+  list.innerHTML=scores.slice(0,8).map((s,i)=>{
+    const cls=i===0?'top1':i===1?'top2':i===2?'top3':'';
+    return `<div class="lbRow ${cls}">
+      <span>${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${s.name} ${diffIcons[s.diff]||''}</span>
+      <span>${s.score.toLocaleString()}</span>
+    </div>
+    <div style="font-size:5px;color:#405040;padding:0 6px 3px">
+      Night ${s.nights}/${s.total} · 🔱${s.tf}/3 · 🏰${s.op}/5 · ${s.date}
+    </div>`;
+  }).join('');
 }
 
 // ╔══════════════════════════════════════════════════════════╗
@@ -374,10 +501,9 @@ function newGame(name, totalNights, diff){
 function genMap(){
   const tiles=Array.from({length:MH},()=>Array(MW).fill(T.GR));
   const ents=[];
-  let seed=Date.now()&0xfffff;
-  function r(){seed=(seed*1664525+1013904223)&0x7fffffff; return seed/0x7fffffff;}
+  let seed=(Date.now()*_nSeed+12345)&0x7fffffff;
+  function r(){seed=(seed*1664525+1013904223)&0x7fffffff;return seed/0x7fffffff;}
 
-  // Terrain
   for(let y=0;y<MH;y++) for(let x=0;x<MW;x++){
     if(x===0||x===MW-1||y===0||y===MH-1){tiles[y][x]=T.WA;continue;}
     const n=noise(x/14,y/14);
@@ -390,23 +516,22 @@ function genMap(){
     if(tiles[y][x]===T.GR&&r()<.04) tiles[y][x]=T.ST;
   }
 
-  // Camp at centre — clear a good-sized area
   const cx=40,cy=40;
   clearZone(tiles,cx,cy,4);
-
-  // BFS reachable from camp
   const reach=bfs(tiles,cx,cy);
 
-  // 5 Outpost ideal positions — moved to nearest reachable spot
   const opIdeal=[[14,14],[65,14],[14,65],[65,65],[40,22]];
-  const opPos=opIdeal.map(([ox,oy])=>nearestReachable(ox,oy,reach,tiles));
+  const opPos=opIdeal.map(([ox,oy])=>nearestReach(ox,oy,reach,tiles));
   opPos.forEach(([ox,oy],i)=>{
     clearZone(tiles,ox,oy,2);
-    // re-confirm reachable after clearing (clearing can open paths)
     ents.push({tp:E.OUTPOST,x:ox,y:oy,id:`op_${i}`,idx:i,locked:true});
   });
 
-  // Chests (18) — only in reachable areas
+  ents.push({tp:E.CAMP,x:cx,y:cy,id:'camp'});
+
+  // Re-compute reach after clearing outpost areas
+  const reach2=bfs(tiles,cx,cy);
+
   const chestPool=[
     'Wooden Sword','Wooden Sword','Iron Sword','Deku Stick','Stone Axe',
     'Wooden Shield','Iron Shield','Hylian Shield','Master Sword',
@@ -416,45 +541,38 @@ function genMap(){
     'Stone','Stone','Wood','Wood','Monster Fang',
   ];
   for(let i=0;i<18;i++){
-    const [ex,ey]=openReach(tiles,ents,r,reach);
+    const [ex,ey]=openReach(tiles,ents,r,reach2);
     const loot=chestPool[Math.floor(r()*chestPool.length)];
     ents.push({tp:E.CHEST,x:ex,y:ey,id:`ch_${i}`,loot,opened:false});
   }
-
-  // Outpost keys
   for(let i=0;i<5;i++){
-    const [ex,ey]=openReach(tiles,ents,r,reach);
+    const [ex,ey]=openReach(tiles,ents,r,reach2);
     ents.push({tp:E.KEY,x:ex,y:ey,id:`k_${i}`,item:`Outpost Key ${i+1}`});
   }
-
-  // Triforce pieces
   ['Triforce of Power','Triforce of Wisdom','Triforce of Courage'].forEach((nm,i)=>{
-    const [ex,ey]=openReach(tiles,ents,r,reach);
+    const [ex,ey]=openReach(tiles,ents,r,reach2);
     ents.push({tp:E.TRI,x:ex,y:ey,id:`tri_${i}`,piece:i,item:nm});
   });
 
-  // Boats — place 3 near shorelines
-  let boatsPlaced=0;
-  for(let attempt=0;attempt<3000&&boatsPlaced<3;attempt++){
-    const x=2+Math.floor(r()*(MW-4)), y=2+Math.floor(r()*(MH-4));
+  // Boats near shorelines
+  let boats=0;
+  for(let attempt=0;attempt<3000&&boats<3;attempt++){
+    const x=2+Math.floor(r()*(MW-4)),y=2+Math.floor(r()*(MH-4));
+    if(!reach2[y][x]) continue;
     if(tiles[y][x]===T.WA||tiles[y][x]===T.TR||tiles[y][x]===T.DT) continue;
-    if(!reach[y][x]) continue;
-    // Must be adjacent to water
-    const adjWater=[[0,1],[0,-1],[1,0],[-1,0]].some(([dx,dy])=>{
+    const adj=[[0,1],[0,-1],[1,0],[-1,0]].some(([dx,dy])=>{
       const nx=x+dx,ny=y+dy;
       return nx>=0&&nx<MW&&ny>=0&&ny<MH&&tiles[ny][nx]===T.WA;
     });
-    if(!adjWater) continue;
-    if(ents.some(e=>e.x===x&&e.y===y)) continue;
+    if(!adj||ents.some(e=>e.x===x&&e.y===y)) continue;
     if(Math.abs(x-cx)<=6&&Math.abs(y-cy)<=6) continue;
-    ents.push({tp:E.BOAT,x,y,id:`boat_${boatsPlaced}`});
-    boatsPlaced++;
+    ents.push({tp:E.BOAT,x,y,id:`boat_${boats}`});
+    boats++;
   }
 
   return {tiles,ents,cx,cy};
 }
 
-// BFS from (sx,sy) — returns 2D boolean reachability grid (ignores trees)
 function bfs(tiles,sx,sy){
   const vis=Array.from({length:MH},()=>Array(MW).fill(false));
   const q=[[sx,sy]]; vis[sy][sx]=true;
@@ -471,8 +589,7 @@ function bfs(tiles,sx,sy){
   return vis;
 }
 
-// Find nearest reachable tile to (ox,oy)
-function nearestReachable(ox,oy,reach,tiles){
+function nearestReach(ox,oy,reach,tiles){
   if(ox>=0&&ox<MW&&oy>=0&&oy<MH&&reach[oy][ox]) return [ox,oy];
   for(let rad=1;rad<40;rad++){
     for(let dy=-rad;dy<=rad;dy++) for(let dx=-rad;dx<=rad;dx++){
@@ -485,13 +602,6 @@ function nearestReachable(ox,oy,reach,tiles){
   return [ox,oy];
 }
 
-function noise(x,y){
-  const xi=Math.floor(x),yi=Math.floor(y),xf=x-xi,yf=y-yi;
-  function ph(a,b){let n=Math.sin(a*127.1+b*311.7)*43758.5453;return n-Math.floor(n);}
-  const s=t=>t*t*(3-2*t),lerp=(a,b,t)=>a+t*(b-a);
-  return lerp(lerp(ph(xi,yi),ph(xi+1,yi),s(xf)),lerp(ph(xi,yi+1),ph(xi+1,yi+1),s(xf)),s(yf));
-}
-
 function clearZone(tiles,cx,cy,rad){
   for(let dy=-rad;dy<=rad;dy++) for(let dx=-rad;dx<=rad;dx++){
     const nx=cx+dx,ny=cy+dy;
@@ -499,7 +609,6 @@ function clearZone(tiles,cx,cy,rad){
   }
 }
 
-// Find open walkable spot that is reachable
 function openReach(tiles,ents,r,reach){
   for(let i=0;i<3000;i++){
     const x=2+Math.floor(r()*(MW-4)),y=2+Math.floor(r()*(MH-4));
@@ -510,28 +619,24 @@ function openReach(tiles,ents,r,reach){
     if(Math.abs(x-40)<=7&&Math.abs(y-40)<=7) continue;
     return [x,y];
   }
-  // fallback
   for(let i=0;i<3000;i++){
     const x=2+Math.floor(r()*(MW-4)),y=2+Math.floor(r()*(MH-4));
-    if(tiles[y][x]===T.WA) continue;
-    if(!ents.some(e=>e.x===x&&e.y===y)) return [x,y];
+    if(tiles[y][x]!==T.WA&&!ents.some(e=>e.x===x&&e.y===y)) return [x,y];
   }
   return [10,10];
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║                  RENDERING                              ║
+// ║                    RENDERING                            ║
 // ╚══════════════════════════════════════════════════════════╝
 let cvs,ctx,camX=0,camY=0;
 
 const TCOL={[T.GR]:'#274f18',[T.TR]:'#1a4509',[T.DT]:'#0e2a05',
             [T.WA]:'#19366a',[T.ST]:'#444',[T.SA]:'#7a6a3a'};
-const TEM={[T.TR]:'🌲',[T.DT]:'🌳',[T.SA]:null,[T.ST]:'🪨'};
-// Water gets a wave tint when on boat
+const TEM={[T.TR]:'🌲',[T.DT]:'🌳',[T.ST]:'🪨'};
 const EEM={[E.CHEST]:'📦',[E.KEY]:'🗝️',[E.OUTPOST]:'🏰',[E.CAMP]:'⛺',
-           [E.TRI]:'🔱',[E.BOAT]:'🚣',
-           [E.BOK]:'👺',[E.KEE]:'🦇',[E.SKU]:'🕷️',[E.LIZ]:'🦎',
-           [E.DEER]:'🦌',[E.RAB]:'🐇',[E.FOX]:'🦊'};
+           [E.TRI]:'🔱',[E.BOAT]:'🚣',[E.BOK]:'👺',[E.KEE]:'🦇',
+           [E.SKU]:'🕷️',[E.LIZ]:'🦎',[E.DEER]:'🦌',[E.RAB]:'🐇',[E.FOX]:'🦊'};
 
 function moveCam(){
   camX=G.pl.x*TS-cvs.width/2+TS/2;
@@ -554,12 +659,10 @@ function draw(){
     const sx=tx*TS-camX,sy=ty*TS-camY;
     const fog=G.fog[ty][tx];
     let col=fog?'#060e06':TCOL[G.map[ty][tx]]||'#274f18';
-    // water shimmer when on boat
     if(!fog&&G.map[ty][tx]===T.WA&&G.pl.hasBoat) col='#2a5aaa';
-    ctx.fillStyle=col;
-    ctx.fillRect(sx,sy,TS,TS);
+    ctx.fillStyle=col; ctx.fillRect(sx,sy,TS,TS);
     if(!fog){
-      ctx.strokeStyle='rgba(0,0,0,.12)';ctx.strokeRect(sx,sy,TS,TS);
+      ctx.strokeStyle='rgba(0,0,0,.12)'; ctx.strokeRect(sx,sy,TS,TS);
       const em=TEM[G.map[ty][tx]];
       if(em){ctx.font=`${TS-8}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
              ctx.fillText(em,sx+TS/2,sy+TS/2);}
@@ -567,32 +670,91 @@ function draw(){
   }
 
   // entities
-  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
   G.ents.forEach(e=>{
     if(e.gone||e.dead) return;
     if(G.fog[e.y][e.x]) return;
     const sx=e.x*TS-camX+TS/2,sy=e.y*TS-camY+TS/2;
     ctx.shadowBlur=0;
-    if(e.tp===E.TRI)    {ctx.shadowColor='#f0c040';ctx.shadowBlur=18;}
+    if(e.tp===E.TRI)     {ctx.shadowColor='#f0c040';ctx.shadowBlur=18;}
     else if(e.tp===E.OUTPOST){ctx.shadowColor=G.opOpen[e.idx]?'#00ff80':'#ff3040';ctx.shadowBlur=10;}
     else if(e.tp===E.CAMP)   {ctx.shadowColor='#60ff80';ctx.shadowBlur=8;}
     else if(e.tp===E.BOAT)   {ctx.shadowColor='#60b8ff';ctx.shadowBlur=10;}
     ctx.font=`${TS-4}px serif`;
-    const em=e.tp===E.CHEST?(e.opened?'📭':'📦'):EEM[e.tp]||'?';
-    ctx.fillText(em,sx,sy);
+    ctx.fillText(e.tp===E.CHEST?(e.opened?'📭':'📦'):EEM[e.tp]||'?',sx,sy);
     ctx.shadowBlur=0;
   });
 
-  // player (shows boat emoji when on water)
-  const px=G.pl.x*TS-camX+TS/2,py=G.pl.y*TS-camY+TS/2;
-  ctx.shadowColor=G.pl.onWater?'#60b8ff':'#80ff80';ctx.shadowBlur=12;
+  // player — golden glow during blessing
+  const px=G.pl.x*TS-camX+TS/2, py=G.pl.y*TS-camY+TS/2;
+  ctx.shadowColor=G.triforceBlessing>0?'#f0c040':G.pl.onWater?'#60b8ff':'#80ff80';
+  ctx.shadowBlur=G.triforceBlessing>0?20:12;
   ctx.font=`${TS}px serif`;
   ctx.fillText(G.pl.onWater?'🚣':'🧝',px,py);
   ctx.shadowBlur=0;
 
   updateHUD();
+  drawMinimap();
 }
 
+// ── Minimap ─────────────────────────────────────────────────
+function drawMinimap(){
+  const mc=document.getElementById('minimap');
+  if(!mc||!G.map) return;
+  const mctx=mc.getContext('2d');
+  mc.width=MW*MM_S; mc.height=MH*MM_S;
+
+  // Terrain via ImageData (fast pixel fill)
+  const img=mctx.createImageData(MW*MM_S,MH*MM_S);
+  const d=img.data;
+  const TC={
+    [T.GR]:[39,79,24],[T.TR]:[26,69,9],[T.DT]:[14,42,5],
+    [T.WA]:[25,54,106],[T.ST]:[85,85,85],[T.SA]:[122,106,58],
+  };
+  for(let ty=0;ty<MH;ty++) for(let tx=0;tx<MW;tx++){
+    const c=G.fog[ty][tx]?[4,8,4]:(TC[G.map[ty][tx]]||TC[T.GR]);
+    for(let dy=0;dy<MM_S;dy++) for(let dx=0;dx<MM_S;dx++){
+      const i=((ty*MM_S+dy)*(MW*MM_S)+(tx*MM_S+dx))*4;
+      d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=255;
+    }
+  }
+  mctx.putImageData(img,0,0);
+
+  // Entity dots
+  function dot(tx,ty,color,size=3){
+    if(G.fog[ty][tx]) return;
+    mctx.fillStyle=color;
+    const px=tx*MM_S, py=ty*MM_S;
+    mctx.fillRect(px-Math.floor(size/2),py-Math.floor(size/2),size,size);
+  }
+
+  G.ents.forEach(e=>{
+    if(e.gone||e.dead) return;
+    if(G.fog[e.y][e.x]) return;
+    if(e.tp===E.OUTPOST)       dot(e.x,e.y,G.opOpen[e.idx]?'#00ff80':'#ff4040',5);
+    else if(e.tp===E.CAMP)     dot(e.x,e.y,'#00ffcc',5);
+    else if(e.tp===E.CHEST&&!e.opened) dot(e.x,e.y,'#f0c040',3);
+    else if(e.tp===E.KEY)      dot(e.x,e.y,'#ff8800',3);
+    else if(e.tp===E.TRI)      dot(e.x,e.y,'#ffff60',4);
+    else if(e.tp===E.BOAT)     dot(e.x,e.y,'#60b8ff',3);
+  });
+
+  // Viewport rectangle
+  if(cvs){
+    const vpW=Math.floor(cvs.width/TS),vpH=Math.floor(cvs.height/TS);
+    const vpX=Math.floor(camX/TS),vpY=Math.floor(camY/TS);
+    mctx.strokeStyle='rgba(255,255,255,0.25)';
+    mctx.lineWidth=1;
+    mctx.strokeRect(vpX*MM_S,vpY*MM_S,vpW*MM_S,vpH*MM_S);
+  }
+
+  // Player dot (always on top, always visible)
+  const ppx=G.pl.x*MM_S, ppy=G.pl.y*MM_S;
+  mctx.fillStyle=G.triforceBlessing>0?'#f0c040':'#ffffff';
+  mctx.fillRect(ppx-2,ppy-2,5,5);
+}
+
+// ── HUD ─────────────────────────────────────────────────────
 function updateHUD(){
   const h=G.time.hour;
   const names=['Midnight','Dead of Night','Dead of Night','Before Dawn','Before Dawn','Dawn',
@@ -603,21 +765,38 @@ function updateHUD(){
   document.getElementById('timeDisp').textContent=`${icon} Day ${G.time.night+1} · ${names[h]||''}`;
   document.getElementById('nightCtr').textContent=`Night: ${G.time.night} / ${G.totalNights}`;
   document.getElementById('rupeeDisp').textContent=`💎 ${G.pl.rupees}`;
-  document.getElementById('boatInd').textContent=G.pl.onWater?'🚣 Sailing':
-                                                  G.pl.hasBoat?'🚣 Have Boat':'';
+  document.getElementById('scoreDisp').textContent=`⭐ ${calcScore().toLocaleString()}`;
+
+  // Triforce blessing
+  const blessed=G.triforceBlessing>0;
+  document.getElementById('blessingDisp').textContent=
+    blessed?`🔱 Blessed: ${G.triforceBlessing} nights`:'';
+
+  // Night vignette: golden tint during blessing, normal blue at night
+  const vig=document.getElementById('nightVig');
+  if(G.time.isNight||blessed){
+    vig.style.opacity='1';
+    vig.style.background=blessed
+      ?'radial-gradient(ellipse at center,rgba(30,20,0,.05) 20%,rgba(50,35,0,.55) 100%)'
+      :'radial-gradient(ellipse at center,rgba(0,0,10,.05) 20%,rgba(0,0,30,.88) 100%)';
+  } else {
+    vig.style.opacity='0';
+  }
+
+  // Golden border when blessed
+  document.getElementById('canvasWrap').classList.toggle('blessed',blessed);
 
   const fill=document.getElementById('timefill');
   fill.style.width=(h/24*100)+'%';
   fill.style.background=G.time.isNight?'#3050d0':(h<8||h>18?'#c08040':'#f0c040');
-  document.getElementById('nightVig').style.opacity=G.time.isNight?'1':'0';
 
   document.getElementById('uiName').textContent=G.pl.name;
 
-  // hearts
   let hh='';
   for(let i=0;i<G.pl.maxHp;i+=2){
-    if(G.pl.hp>=i+2)       hh+='<span class="heart">❤️</span>';
-    else if(G.pl.hp===i+1) hh+='<span class="heart">💛</span>';
+    const goldHeart=blessed;
+    if(G.pl.hp>=i+2)       hh+=`<span class="heart">${goldHeart?'💛':'❤️'}</span>`;
+    else if(G.pl.hp===i+1) hh+='<span class="heart">🧡</span>';
     else                    hh+='<span class="heart" style="opacity:.25">🖤</span>';
   }
   document.getElementById('heartsRow').innerHTML=hh;
@@ -634,12 +813,24 @@ function updateHUD(){
 
   const tf=G.triforce;
   document.getElementById('tfDisp').textContent=(tf[0]?'🔱':'△')+(tf[1]?'🔱':'△')+(tf[2]?'🔱':'△');
+  const bb=document.getElementById('blessingBar');
+  if(blessed){
+    bb.style.display='block';
+    const pct=Math.round((G.triforceBlessing/12)*100);
+    bb.innerHTML=`✨ Blessing ${pct}% · +3 ATK · -60% spawns<br>
+      <div style="height:4px;background:#1a3a1a;border-radius:2px;margin-top:2px;">
+        <div style="height:100%;width:${pct}%;background:#f0c040;border-radius:2px;transition:width .5s"></div>
+      </div>`;
+  } else { bb.style.display='none'; }
+
   document.getElementById('opStatus').innerHTML=
-    G.opOpen.map((u,i)=>u?`🏰✅ ${OP_NAMES[i]}`:`🏰🔒 ${OP_NAMES[i]}`).join('<br>');
+    G.opOpen.map((u,i)=>
+      `<span style="color:${u?'#00ff80':'#ff6060'}">${u?'🏰✅':'🏰🔒'}</span> <span style="color:${u?'#a0d890':'#a07070'};font-size:6px">${OP_NAMES[i]}</span>`
+    ).join('<br>');
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║               TIME & MOVEMENT                           ║
+// ║                TIME & MOVEMENT                          ║
 // ╚══════════════════════════════════════════════════════════╝
 function tick(n=1){
   for(let i=0;i<n;i++){
@@ -650,6 +841,7 @@ function tick(n=1){
       G.time.isNight=G.time.hour<DAY_START||G.time.hour>=DAY_END;
       if(!was&&G.time.isNight){
         G.time.night++;
+        if(G.triforceBlessing>0) G.triforceBlessing--;
         msg(`🌙 Night ${G.time.night} falls... monsters awaken!`,'md');
         if(G.time.night>=G.totalNights){triggerVictory();return;}
       } else if(was&&!G.time.isNight){
@@ -663,8 +855,8 @@ function tick(n=1){
 function canWalk(x,y){
   if(x<0||x>=MW||y<0||y>=MH) return false;
   const t=G.map[y][x];
-  if(t===T.WA) return G.pl.hasBoat;   // water needs boat
-  return t!==T.TR&&t!==T.DT;          // trees block unless cut
+  if(t===T.WA) return G.pl.hasBoat;
+  return t!==T.TR&&t!==T.DT;
 }
 
 function move(dx,dy){
@@ -673,34 +865,27 @@ function move(dx,dy){
   if(nx<0||nx>=MW||ny<0||ny>=MH) return;
   const t=G.map[ny][nx];
 
-  // Tree-cutting with axe
   if(t===T.TR||t===T.DT){
     if(G.pl.hasAxe){
       G.map[ny][nx]=T.GR;
       G.pl.x=nx; G.pl.y=ny;
-      reveal(nx,ny,3);
-      tick(2); // chopping costs extra actions
-      msg('🪓 You chop down the tree and push through!'+(t===T.DT?' It was a mighty tree.':''),'mi');
-      // chopping gives wood
-      if(Math.random()<0.7) addItem('Wood');
+      reveal(nx,ny,3); tick(2);
+      msg(`🪓 You chop down the ${t===T.DT?'mighty':''}tree and push through!`+(Math.random()<.7?' You find some Wood.':''),'mi');
+      if(Math.random()<.7) addItem('Wood');
       stepOn();
     } else {
       msg('🌲 A tree blocks the way! Craft or find a Stone Axe to chop through.','mw');
     }
     draw(); return;
   }
-
-  // Water without boat
   if(t===T.WA&&!G.pl.hasBoat){
-    msg('🌊 Water blocks the way! Find a 🚣 Boat to sail across.','mw');
+    msg('🌊 Water blocks the way! Find a 🚣 Boat near the shoreline to sail.','mw');
     draw(); return;
   }
 
-  // Normal move
   G.pl.x=nx; G.pl.y=ny;
   G.pl.onWater=(t===T.WA);
-  reveal(nx,ny,3);
-  tick();
+  reveal(nx,ny,3); tick();
   stepOn();
   if(G.time.isNight) trySpawn();
   draw();
@@ -714,41 +899,33 @@ function reveal(cx,cy,rad){
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║              ENTITY INTERACTIONS                        ║
+// ║            ENTITY INTERACTIONS                          ║
 // ╚══════════════════════════════════════════════════════════╝
 function stepOn(){
   G.ents.forEach(e=>{
-    if(e.gone||e.dead) return;
-    if(e.x!==G.pl.x||e.y!==G.pl.y) return;
+    if(e.gone||e.dead||e.x!==G.pl.x||e.y!==G.pl.y) return;
     onStep(e);
   });
 }
 
 function onStep(e){
   switch(e.tp){
-    case E.CAMP:
-      msg('⛺ Back at camp. You feel a little safer here.','mi'); break;
+    case E.CAMP: msg('⛺ Back at camp. You feel a little safer here.','mi'); break;
     case E.KEY:
       if(addItem(e.item)){e.gone=true;msg(`🗝️ Found ${e.item}!`,'ms');} break;
     case E.BOAT:
-      if(!G.pl.hasBoat){
-        G.pl.hasBoat=true; addItem('Boat'); e.gone=true;
-        msg('🚣 You found a boat! You can now sail across water.','ms');
-      } break;
+      if(!G.pl.hasBoat){G.pl.hasBoat=true;addItem('Boat');e.gone=true;
+        msg('🚣 You found a boat! Walk into water to sail.','ms');} break;
     case E.TRI:
       if(!G.triforce[e.piece]){
         G.triforce[e.piece]=true; addItem(e.item); e.gone=true;
         msg(`🔱 TRIFORCE PIECE FOUND! ${e.item}!`,'mw');
-        if(G.triforce.every(t=>t)){
-          msg('✨ THE TRIFORCE IS COMPLETE! Ancient power surges — +4 max HP!','mw');
-          G.pl.maxHp=Math.min(G.pl.maxHp+4,20);
-          G.pl.hp=Math.min(G.pl.hp+4,G.pl.maxHp);
-        }
+        if(G.triforce.every(t=>t)) triforceComplete();
+        else msg(`🔱 ${G.triforce.filter(t=>t).length}/3 pieces — keep searching!`,'mw');
       } break;
     case E.CHEST:
       if(!e.opened){e.opened=true;showChest(e.loot);} break;
-    case E.OUTPOST:
-      showOutpost(e); break;
+    case E.OUTPOST: showOutpost(e); break;
     case E.BOK: case E.KEE: case E.SKU: case E.LIZ:
       if(!e.dead) startCombat(e); break;
     case E.DEER: case E.RAB: case E.FOX:
@@ -757,7 +934,40 @@ function onStep(e){
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║                INVENTORY                                ║
+// ║          🔱 TRIFORCE COMPLETE EFFECT                    ║
+// ╚══════════════════════════════════════════════════════════╝
+function triforceComplete(){
+  // Activate blessing
+  G.triforceBlessing=12;
+  G.pl.maxHp=Math.min(G.pl.maxHp+4,20);
+  G.pl.hp=G.pl.maxHp; // full heal
+
+  // Flash overlay
+  const flash=document.getElementById('triFlash');
+  flash.classList.remove('on');
+  void flash.offsetWidth; // reflow
+  flash.classList.add('on');
+  setTimeout(()=>flash.classList.remove('on'),3500);
+
+  msg('✨✨✨ THE TRIFORCE IS COMPLETE! THE GOLDEN POWER IS YOURS! ✨✨✨','mw');
+
+  showO('🔱 TRIFORCE COMPLETE! 🔱',
+    `<div style="font-size:48px;margin:8px 0;animation:triPulse 1.5s ease-out">🔱</div>
+     <p style="color:#f0c040;font-size:12px;margin:8px 0">THE GOLDEN POWER IS YOURS!</p>
+     <p>Din, Nayru, and Farore bless you with their divine power!</p>
+     <hr style="border-color:#c09020;margin:10px 0">
+     <p>✅ Maximum hearts increased by <span style="color:#f0c040">+2</span></p>
+     <p>✅ Fully healed to <span style="color:#f0c040">maximum health</span></p>
+     <p>✅ <span style="color:#f0c040">Triforce Blessing</span> active for 12 nights:</p>
+     <p style="font-size:7px;color:#c0b060">  ⚔️ +3 bonus ATK in all combat<br>
+       👾 60% fewer monster spawns<br>
+       🌙 Night vignette turns golden<br>
+       💛 Hearts glow with golden power</p>`,
+    [{t:'Feel the Power!',f:'closeO()',cls:'btn-tri'}]);
+}
+
+// ╔══════════════════════════════════════════════════════════╗
+// ║                 INVENTORY                               ║
 // ╚══════════════════════════════════════════════════════════╝
 function addItem(nm){
   if(G.pl.inv.length>=20){msg('Inventory full! (20/20) — drop something first.','mw');return false;}
@@ -767,40 +977,22 @@ function addItem(nm){
 function quickUse(i){
   const nm=G.pl.inv[i]; if(!nm) return;
   const d=ITEMS[nm]; if(!d) return;
-  if(d.tp==='weapon'){
-    G.pl.eq.w=nm; G.pl.atk=d.atk; G.pl.hasAxe=false;
-    msg(`Equipped ${nm} (ATK +${d.atk}).`,'mi');
-  } else if(d.tp==='axe'){
-    G.pl.eq.w=nm; G.pl.atk=d.atk; G.pl.hasAxe=true;
-    msg(`🪓 Stone Axe equipped! You can now chop trees and fight.`,'ms');
-  } else if(d.tp==='armor'){
-    G.pl.eq.a=nm; G.pl.def=d.def;
-    msg(`Equipped ${nm} (DEF +${d.def}).`,'mi');
-  } else if(d.tp==='use'){
-    useConsumable(i);
-  } else if(d.tp==='boat'){
-    G.pl.hasBoat=true;
-    msg('🚣 Boat ready! Walk into water to sail.','ms');
-  } else if(d.tp==='tool'&&nm==='Lantern'){
-    G.pl.hasLantern=true;
-    msg('🏮 Lantern lit! Monsters will be less bold at night.','ms');
-  } else if(d.tp==='tool'&&nm==='Map Fragment'){
-    G.pl.inv.splice(i,1); revealFragment();
-    msg('🗺️ Map fragment revealed a new area!','ms');
-  } else {
-    msg(`${nm}: ${d.desc}`,'mi');
-  }
+  if(d.tp==='weapon'){G.pl.eq.w=nm;G.pl.atk=d.atk;G.pl.hasAxe=false;msg(`Equipped ${nm} (ATK +${d.atk}).`,'mi');}
+  else if(d.tp==='axe'){G.pl.eq.w=nm;G.pl.atk=d.atk;G.pl.hasAxe=true;msg(`🪓 Stone Axe equipped! Chop trees and fight.`,'ms');}
+  else if(d.tp==='armor'){G.pl.eq.a=nm;G.pl.def=d.def;msg(`Equipped ${nm} (DEF +${d.def}).`,'mi');}
+  else if(d.tp==='use'){useConsumable(i);}
+  else if(d.tp==='boat'){G.pl.hasBoat=true;msg('🚣 Boat ready! Walk into water to sail.','ms');}
+  else if(d.tp==='tool'&&nm==='Lantern'){G.pl.hasLantern=true;msg('🏮 Lantern lit! Monsters will be less bold.','ms');}
+  else if(d.tp==='tool'&&nm==='Map Fragment'){G.pl.inv.splice(i,1);revealFragment();msg('🗺️ Map fragment revealed a new area!','ms');}
+  else{msg(`${nm}: ${d.desc}`,'mi');}
   draw();
 }
 
 function useConsumable(i){
-  const nm=G.pl.inv[i]; const d=ITEMS[nm];
+  const nm=G.pl.inv[i];const d=ITEMS[nm];
   G.pl.inv.splice(i,1);
-  if(d.revive){G.pl.hasFairy=true; msg('🧚 Fairy captured! Auto-revive ready.','ms');}
-  else if(d.heal){
-    G.pl.hp=Math.min(G.pl.hp+d.heal,G.pl.maxHp);
-    msg(`Used ${nm}. Restored ${Math.min(d.heal,d.heal)/2} hearts.`,'ms');
-  }
+  if(d.revive){G.pl.hasFairy=true;msg('🧚 Fairy captured! Auto-revive ready.','ms');}
+  else if(d.heal){G.pl.hp=Math.min(G.pl.hp+d.heal,G.pl.maxHp);msg(`Used ${nm}.`,'ms');}
 }
 
 function revealFragment(){
@@ -819,15 +1011,15 @@ function dropItem(i){
 
 function openInvScreen(){
   if(G.pl.inv.length===0){msg('Your inventory is empty.','mi');return;}
-  let html=`<p style="color:#90d878">${G.pl.inv.length}/20 items held</p>
+  let html=`<p style="color:#90d878">${G.pl.inv.length}/20 items</p>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">`;
   G.pl.inv.forEach((nm,i)=>{
     const d=ITEMS[nm]||{ic:'?',desc:''};
     const eq=G.pl.eq.w===nm||G.pl.eq.a===nm;
     const lbl=d.tp==='weapon'||d.tp==='armor'||d.tp==='axe'?'Equip':d.tp==='use'?'Use':'Use';
     html+=`<div style="background:#0a1a0a;border:1px solid ${eq?'#4090f0':'#2d5a1b'};padding:5px;border-radius:3px;text-align:left;">
-      <div style="font-size:10px;">${d.ic} <span style="font-size:7px;color:${eq?'#80c0ff':'#a8c8a8'}">${nm}</span></div>
-      <div style="font-size:6px;color:#607060;margin:2px 0">${d.desc}</div>
+      <div style="font-size:9px;">${d.ic} <span style="font-size:7px;color:${eq?'#80c0ff':'#a8c8a8'}">${nm}</span></div>
+      <div style="font-size:5px;color:#607060;margin:2px 0">${d.desc}</div>
       <button class="btn" style="font-size:6px;padding:2px 5px;margin-top:2px" onclick="quickUse(${i});closeO()">${lbl}</button>
       <button class="btn btn-red" style="font-size:6px;padding:2px 5px;margin-top:2px" onclick="dropItem(${i});closeO()">Drop</button>
     </div>`;
@@ -837,13 +1029,13 @@ function openInvScreen(){
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║                     CHEST                               ║
+// ║                  CHEST & OUTPOSTS                       ║
 // ╚══════════════════════════════════════════════════════════╝
 function showChest(loot){
   const d=ITEMS[loot]||{ic:'?',desc:''};
   showO('📦 Chest Opened!',
     `<p>You pry open the old chest and find...</p>
-     <p style="font-size:22px;margin:10px 0">${d.ic}</p>
+     <p style="font-size:24px;margin:10px 0">${d.ic}</p>
      <p style="color:#f0c040;font-size:10px">${loot}</p>
      <p style="font-size:7px;color:#90c890">${d.desc}</p>`,
     [{t:'Take It!',f:`takeChest('${loot.replace(/'/g,"\\'")}')`,cls:'btn-gold'},{t:'Leave It',f:'closeO()'}]
@@ -851,32 +1043,24 @@ function showChest(loot){
 }
 function takeChest(loot){closeO();if(addItem(loot))msg(`Got ${loot} from chest!`,'ms');draw();}
 
-// ╔══════════════════════════════════════════════════════════╗
-// ║                    OUTPOSTS                             ║
-// ╚══════════════════════════════════════════════════════════╝
 function showOutpost(e){
   const idx=e.idx,nm=OP_NAMES[idx];
   if(!G.opOpen[idx]){
-    const key=`Outpost Key ${idx+1}`;
-    const has=G.pl.inv.includes(key);
+    const key=`Outpost Key ${idx+1}`, has=G.pl.inv.includes(key);
     if(has){
-      showO(`🏰 Outpost ${nm}`,
-        `<p>A fortified outpost. You have the ${key}!</p>`,
+      showO(`🏰 Outpost ${nm}`,`<p>A fortified outpost. You have the ${key}!</p>`,
         [{t:'🗝️ Unlock',f:`unlockOp(${idx})`,cls:'btn-gold'},{t:'Leave',f:'closeO()'}]);
     } else {
       showO(`🏰 Outpost ${nm} (Locked)`,
         `<p>A fortified outpost. The door is locked.</p><p>You need <span style="color:#f0c040">${key}</span> to enter.</p>`,
         [{t:'Leave',f:'closeO()'}]);
     }
-  } else {
-    opMenu(idx,nm);
-  }
+  } else { opMenu(idx,nm); }
 }
 
 function unlockOp(idx){
   const key=`Outpost Key ${idx+1}`;
-  const ki=G.pl.inv.indexOf(key);
-  if(ki>=0) G.pl.inv.splice(ki,1);
+  const ki=G.pl.inv.indexOf(key); if(ki>=0) G.pl.inv.splice(ki,1);
   G.opOpen[idx]=true;
   G.ents.find(e=>e.tp===E.OUTPOST&&e.idx===idx).locked=false;
   msg(`🏰 Outpost ${OP_NAMES[idx]} unlocked! A safe refuge secured.`,'ms');
@@ -884,24 +1068,18 @@ function unlockOp(idx){
 }
 
 function opMenu(idx,nm){
-  showO(`🏰 Outpost ${nm}`,
-    `<p>A safe haven in the cursed forest. What will you do?</p>`,
-    [
-      {t:'💤 Sleep Safely',f:'opSleep()',cls:'btn-gold'},
-      {t:'⚒️ Crafting',f:'openCraft()'},
-      {t:'🧙 Merchant',f:'openShop()'},
-      {t:`📜 Lore`,f:`readLore(${idx})`},
-      {t:'Leave',f:'closeO()'},
-    ]
-  );
+  showO(`🏰 Outpost ${nm}`,`<p>A safe haven in the cursed forest.</p>`,
+    [{t:'💤 Sleep Safely',f:'opSleep()',cls:'btn-gold'},{t:'⚒️ Crafting',f:'openCraft()'},
+     {t:'🧙 Merchant',f:'openShop()'},{t:'📜 Lore',f:`readLore(${idx})`},{t:'Leave',f:'closeO()'}]);
 }
 
 function opSleep(){
-  const was=G.time.isNight;
-  G.time.hour=8; G.time.isNight=false;
-  if(was){G.time.night++;msg(`💤 Slept safely! Night ${G.time.night} passed.`,'ms');}
+  const was=G.time.isNight; G.time.hour=8; G.time.isNight=false;
+  if(was){G.time.night++;if(G.triforceBlessing>0)G.triforceBlessing--;
+    msg(`💤 Slept safely! Night ${G.time.night} passed.`,'ms');}
   else msg('💤 You rest and feel refreshed.','mi');
-  G.pl.hp=Math.min(G.pl.hp+4,G.pl.maxHp);
+  // Blessing gives full heal at outpost, normal gives partial
+  G.pl.hp=Math.min(G.pl.hp+(G.triforceBlessing>0?G.pl.maxHp:4),G.pl.maxHp);
   purgeMonsters(); closeO();
   if(G.time.night>=G.totalNights){triggerVictory();return;}
   draw();
@@ -914,15 +1092,15 @@ function readLore(i){
 }
 
 function openCraft(){
-  let html=`<p style="color:#90d878">Combine materials to craft items at this bench.</p>`;
+  let html=`<p style="color:#90d878">Combine materials to forge new items.</p>`;
   RECIPES.forEach((rec,i)=>{
     const can=rec.needs.every(n=>G.pl.inv.includes(n));
     const d=ITEMS[rec.result]||{ic:'?'};
     html+=`<div style="border:1px solid #2d5a1b;padding:5px;margin:4px 0;border-radius:3px">
       <div style="font-size:8px;color:${can?'#f0c040':'#506050'}">${d.ic} ${rec.result}</div>
-      <div style="font-size:7px;color:#506050">Needs: ${rec.needs.join(' + ')}</div>
-      <div style="font-size:6px;color:#708060;margin:1px 0">${rec.desc||''}</div>
-      ${can?`<button class="btn btn-gold" style="margin-top:3px;padding:3px 8px" onclick="craft(${i})">Craft!</button>`:'<span style="font-size:6px;color:#405040">Missing materials</span>'}
+      <div style="font-size:6px;color:#506050">Needs: ${rec.needs.join(' + ')}</div>
+      <div style="font-size:5px;color:#708060;margin:1px 0">${rec.desc||''}</div>
+      ${can?`<button class="btn btn-gold" style="margin-top:3px;padding:3px 8px" onclick="craft(${i})">Craft!</button>`:'<span style="font-size:5px;color:#405040">Missing materials</span>'}
     </div>`;
   });
   showO('⚒️ Crafting Bench',html,[{t:'Close',f:'closeO()'}]);
@@ -936,17 +1114,14 @@ function craft(i){
 }
 
 function openShop(){
-  let html=`<p>A mysterious merchant grins behind a cluttered stall.</p>
-    <p style="color:#00e8ff">Your rupees: 💎 ${G.pl.rupees}</p>`;
+  let html=`<p>A grinning merchant gestures to his wares.</p>
+    <p style="color:#00e8ff">💎 ${G.pl.rupees} rupees</p>`;
   SHOP.forEach((s,i)=>{
-    const can=G.pl.rupees>=s.price;
-    const d=ITEMS[s.name]||{ic:'?'};
+    const can=G.pl.rupees>=s.price, d=ITEMS[s.name]||{ic:'?'};
     html+=`<div style="border:1px solid #2d5a1b;padding:5px;margin:3px;display:flex;justify-content:space-between;align-items:center;border-radius:3px">
       <span style="font-size:8px">${d.ic} ${s.name}</span>
-      <span>
-        <span style="font-size:7px;color:#00e8ff">💎${s.price}</span>
-        ${can?`<button class="btn btn-gold" style="padding:2px 8px;margin-left:4px" onclick="buy(${i})">Buy</button>`:''}
-      </span>
+      <span><span style="font-size:7px;color:#00e8ff">💎${s.price}</span>
+      ${can?`<button class="btn btn-gold" style="padding:2px 8px;margin-left:4px" onclick="buy(${i})">Buy</button>`:''}</span>
     </div>`;
   });
   showO('🧙 Wandering Merchant',html,[{t:'Leave',f:'closeO()'}]);
@@ -956,11 +1131,9 @@ function buy(i){
   const s=SHOP[i];
   if(G.pl.rupees<s.price){msg('Not enough rupees!','mw');return;}
   if(addItem(s.name)){
-    G.pl.rupees-=s.price;
-    msg(`Bought ${s.name} for 💎${s.price}!`,'ms');
-    // special flags
-    if(s.name==='Boat'){G.pl.hasBoat=true;}
-    if(s.name==='Lantern'){G.pl.hasLantern=true;}
+    G.pl.rupees-=s.price; msg(`Bought ${s.name} for 💎${s.price}!`,'ms');
+    if(s.name==='Boat') G.pl.hasBoat=true;
+    if(s.name==='Lantern') G.pl.hasLantern=true;
   }
   closeO(); openShop();
 }
@@ -971,14 +1144,15 @@ function buy(i){
 function startCombat(e){G.combat=e;G.screen='combat';showCombat();}
 
 function showCombat(){
-  const e=G.combat;
-  const mb=MON[e.tp]||{ic:'👹',name:'Monster'};
+  const e=G.combat, mb=MON[e.tp]||{ic:'👹',name:'Monster'};
+  const blessBonus=G.triforceBlessing>0?3:0;
+  const pAtk=G.pl.atk+blessBonus;
   showO(`⚔️ ${mb.ic} ${e.name} Attacks!`,
     `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0">
       <div style="background:#0a2a0a;padding:7px;border-radius:4px;border:1px solid #2d7a2d">
         <div style="font-size:9px;color:#78e878">🧝 ${G.pl.name}</div>
         <div style="font-size:7px;margin-top:3px">❤️ ${G.pl.hp}/${G.pl.maxHp}</div>
-        <div style="font-size:7px">⚔️${G.pl.atk} 🛡️${G.pl.def}</div>
+        <div style="font-size:7px">⚔️${pAtk}${blessBonus?` <span style="color:#f0c040">(+${blessBonus}🔱)</span>`:''} 🛡️${G.pl.def}</div>
       </div>
       <div style="background:#2a0a0a;padding:7px;border-radius:4px;border:1px solid #7a2d2d">
         <div style="font-size:9px;color:#e87878">${mb.ic} ${e.name}</div>
@@ -986,27 +1160,22 @@ function showCombat(){
         <div style="font-size:7px">⚔️${e.atk} 🛡️${e.def}</div>
       </div>
     </div>
-    <div style="font-size:7px;color:#f0c040">Night ${G.time.night} — Choose your action!</div>`,
-    [
-      {t:'⚔️ Attack',f:'cAttack()',cls:'btn-red'},
-      {t:'🛡️ Defend',f:'cDefend()'},
-      {t:'🧪 Heal',f:'cHeal()'},
-      {t:'💨 Flee',f:'cFlee()'},
-    ]
-  );
+    <div style="font-size:7px;color:#f0c040">Night ${G.time.night}${G.triforceBlessing>0?' — 🔱 TRIFORCE BLESSED':''}</div>`,
+    [{t:'⚔️ Attack',f:'cAttack()',cls:'btn-red'},{t:'🛡️ Defend',f:'cDefend()'},
+     {t:'🧪 Heal',f:'cHeal()'},{t:'💨 Flee',f:'cFlee()'}]);
 }
 
 function d6(){return 1+Math.floor(Math.random()*6);}
 
 function cAttack(){
   const e=G.combat;
-  const pr=d6()+G.pl.atk, pd=Math.max(0,pr-e.def);
+  const bonus=G.triforceBlessing>0?3:0;
+  const pr=d6()+G.pl.atk+bonus, pd=Math.max(0,pr-e.def);
   e.hp-=pd;
-  let m=`You roll 🎲${pr-G.pl.atk}+${G.pl.atk}→${pd} dmg to ${e.name}!`;
+  let m=`You roll 🎲${pr-G.pl.atk-bonus}+${G.pl.atk+bonus}→${pd} dmg to ${e.name}!`;
   if(e.hp<=0){winCombat(e,m);return;}
   const er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
-  G.pl.hp-=ed;
-  m+=` | ${e.name} hits for ${ed} dmg!`;
+  G.pl.hp-=ed; m+=` | ${e.name} hits for ${ed}!`;
   msg(m,'md');
   if(G.pl.hp<=0){loseCombat();return;}
   showCombat();
@@ -1016,37 +1185,33 @@ function cDefend(){
   const e=G.combat;
   const er=d6()+e.atk, ed=Math.max(0,er-G.pl.def-3);
   G.pl.hp-=ed;
-  msg(`You brace! ${e.name} hits for ${ed} dmg (blocked some).`,'mi');
+  msg(`You brace! ${e.name} hits for ${ed} dmg (partially blocked).`,'mi');
   if(G.pl.hp<=0){loseCombat();return;}
   showCombat();
 }
 
 function cHeal(){
   const pi=G.pl.inv.findIndex(n=>(ITEMS[n]||{}).heal>0);
-  if(pi<0){msg('No healing items in inventory!','mw');showCombat();return;}
+  if(pi<0){msg('No healing items!','mw');showCombat();return;}
   useConsumable(pi);
-  const e=G.combat;
-  const er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
+  const e=G.combat, er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
   G.pl.hp=Math.max(0,G.pl.hp-ed);
-  msg(`You healed! But ${e.name} attacks for ${ed} dmg!`,'mw');
+  msg(`You healed! But ${e.name} attacks for ${ed}!`,'mw');
   if(G.pl.hp<=0){loseCombat();return;}
   showCombat();
 }
 
 function cFlee(){
-  const pct=0.45+Math.floor(G.time.night/5)*0.04;
   const ename=G.combat?G.combat.name:'monster';
-  if(Math.random()<pct){
-    const ox=G.pl.x,oy=G.pl.y;
-    G.pl.x=Math.max(1,Math.min(MW-2,ox+(Math.random()<.5?-3:3)));
-    G.pl.y=Math.max(1,Math.min(MH-2,oy+(Math.random()<.5?-3:3)));
+  if(Math.random()<0.45+Math.floor(G.time.night/5)*0.04){
+    G.pl.x=Math.max(1,Math.min(MW-2,G.pl.x+(Math.random()<.5?-3:3)));
+    G.pl.y=Math.max(1,Math.min(MH-2,G.pl.y+(Math.random()<.5?-3:3)));
     G.screen='play'; G.combat=null; closeO();
     msg(`You fled from the ${ename}!`,'mw');
   } else {
-    const e=G.combat;
-    const er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
+    const e=G.combat, er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
     G.pl.hp=Math.max(0,G.pl.hp-ed);
-    msg(`Failed to flee! ${ename} strikes for ${ed} dmg!`,'md');
+    msg(`Failed to flee! ${ename} strikes for ${ed}!`,'md');
     if(G.pl.hp<=0){loseCombat();return;}
     showCombat();
   }
@@ -1058,7 +1223,7 @@ function winCombat(e,lastMsg){
   const rp=mb.rMin+Math.floor(Math.random()*(mb.rMax-mb.rMin));
   G.pl.rupees+=rp;
   const drop=mb.drops[Math.floor(Math.random()*mb.drops.length)];
-  const gotDrop=drop&&Math.random()<0.55;
+  const gotDrop=drop&&Math.random()<.55;
   if(gotDrop) addItem(drop);
   msg(`${lastMsg} → VICTORY! +💎${rp}${gotDrop?` + ${drop}`:''}!`,'ms');
   G.screen='play'; G.combat=null;
@@ -1084,67 +1249,53 @@ function loseCombat(){
   purgeMonsters(); reveal(40,40,4);
   showO('💀 You Fell!',
     `<p>Darkness claimed you... you wake at camp.</p>
-     <p style="color:#f07878">A day has passed. Night: ${G.time.night}/${G.totalNights}</p>
-     ${dropped.length?`<p style="color:#a07040">You dropped: ${dropped.join(', ')}</p>`:''}
-     <p>Stay closer to camp at night!</p>`,
+     <p style="color:#f07878">Night: ${G.time.night}/${G.totalNights}</p>
+     ${dropped.length?`<p style="color:#a07040">Dropped: ${dropped.join(', ')}</p>`:''}`,
     [{t:'Rise & Survive!',f:'closeO()',cls:'btn-gold'}]);
-  msg(`💀 Defeated! Woke at camp. Night: ${G.time.night}/${G.totalNights}. Lost: ${dropped.join(', ')||'nothing'}.`,'md');
+  msg(`💀 Defeated! Camp. Night: ${G.time.night}/${G.totalNights}. Lost: ${dropped.join(', ')||'nothing'}.`,'md');
   draw();
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║              MONSTER SPAWNING                           ║
+// ║             MONSTER SPAWNING                            ║
 // ╚══════════════════════════════════════════════════════════╝
 function trySpawn(){
   if(!G.time.isNight) return;
   const dm=DIFF_MULT[G.diff]||DIFF_MULT.normal;
   let chance=Math.min(0.06+G.time.night*0.0025,0.20)*dm[2];
   if(G.pl.hasLantern) chance*=0.45;
+  if(G.triforceBlessing>0) chance*=0.40; // blessing dramatically reduces spawns
   if(Math.random()>chance) return;
-
   const n=G.time.night;
   let pool;
-  if(n<10)       pool=[E.KEE,E.KEE,E.BOK];
-  else if(n<30)  pool=[E.KEE,E.BOK,E.BOK,E.SKU];
-  else if(n<60)  pool=[E.BOK,E.SKU,E.SKU,E.LIZ];
-  else           pool=[E.SKU,E.LIZ,E.LIZ];
-
-  const tp=pool[Math.floor(Math.random()*pool.length)];
-  const mb=MON[tp];
-  const scale=(1+n*0.03)*dm[0];
-  const atkScale=(1+n*0.02)*dm[1];
-
-  const ang=Math.random()*Math.PI*2;
-  const dist=3+Math.floor(Math.random()*3);
+  if(n<10) pool=[E.KEE,E.KEE,E.BOK];
+  else if(n<30) pool=[E.KEE,E.BOK,E.BOK,E.SKU];
+  else if(n<60) pool=[E.BOK,E.SKU,E.SKU,E.LIZ];
+  else pool=[E.SKU,E.LIZ,E.LIZ];
+  const tp=pool[Math.floor(Math.random()*pool.length)], mb=MON[tp];
+  const scale=(1+n*0.03)*dm[0], atkS=(1+n*0.02)*dm[1];
+  const ang=Math.random()*Math.PI*2, dist=3+Math.floor(Math.random()*3);
   let ex=Math.round(G.pl.x+Math.cos(ang)*dist);
   let ey=Math.round(G.pl.y+Math.sin(ang)*dist);
   ex=Math.max(1,Math.min(MW-2,ex)); ey=Math.max(1,Math.min(MH-2,ey));
   if(G.map[ey][ex]===T.WA||G.map[ey][ex]===T.TR||G.map[ey][ex]===T.DT) return;
-
-  G.ents.push({
-    tp,x:ex,y:ey,id:`m_${Date.now()}_${Math.random()}`,
-    name:mb.name,
-    hp:Math.max(1,Math.ceil(mb.hp*scale)),
-    maxHp:Math.max(1,Math.ceil(mb.hp*scale)),
-    atk:Math.max(1,Math.ceil(mb.atk*atkScale)),
-    def:Math.ceil(mb.def*scale),
-    drops:mb.drops,
-  });
+  G.ents.push({tp,x:ex,y:ey,id:`m_${Date.now()}_${Math.random()}`,name:mb.name,
+    hp:Math.max(1,Math.ceil(mb.hp*scale)),maxHp:Math.max(1,Math.ceil(mb.hp*scale)),
+    atk:Math.max(1,Math.ceil(mb.atk*atkS)),def:Math.ceil(mb.def*scale),drops:mb.drops});
   reveal(ex,ey,2);
   msg(`👹 A ${mb.name} ${mb.ic} emerges from the shadows!`,'md');
 }
 
 function purgeMonsters(){
   G.ents=G.ents.filter(e=>{
-    if([E.BOK,E.KEE,E.SKU,E.LIZ].includes(e.tp)){
+    if([E.BOK,E.KEE,E.SKU,E.LIZ].includes(e.tp))
       return Math.abs(e.x-G.pl.x)+Math.abs(e.y-G.pl.y)<3;
-    }
     return true;
   });
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║                ACTION BUTTONS                           ║
+// ║               ACTION BUTTONS                            ║
 // ╚══════════════════════════════════════════════════════════╝
 function doForage(){
   if(G.screen!=='play'||G.done) return;
@@ -1153,23 +1304,19 @@ function doForage(){
   const pool=['Berries','Berries','Berries','Stamella Shroom','Wood','Wood','Stone','Monster Fang','Keese Wing'];
   if(Math.random()<0.68){
     const f=pool[Math.floor(Math.random()*pool.length)];
-    if(addItem(f)) msg(`🌿 Foraging: found ${ITEMS[f]?.ic||''} ${f}!`,'ms');
-  } else msg('🌿 You search but find nothing useful this time.','mi');
-  if(Math.random()<0.22){
-    const rp=1+Math.floor(Math.random()*6);
-    G.pl.rupees+=rp; msg(`Spotted 💎${rp} rupees glinting in the leaves!`,'ms');
-  }
+    if(addItem(f)) msg(`🌿 Found ${ITEMS[f]?.ic||''} ${f}!`,'ms');
+  } else msg('🌿 Nothing useful here.','mi');
+  if(Math.random()<0.22){const rp=1+Math.floor(Math.random()*6);G.pl.rupees+=rp;msg(`💎${rp} rupees!`,'ms');}
   if(G.time.isNight) trySpawn();
   draw();
 }
 
 function doRest(){
   if(G.screen!=='play'||G.done) return;
-  if(G.pl.onWater){msg('🌊 Cannot rest properly while on water!','mw');return;}
+  if(G.pl.onWater){msg('🌊 Cannot rest while on water!','mw');return;}
   if(G.time.isNight) msg('⚠️ Resting at night is risky — monsters may find you!','mw');
-  tick(3);
-  G.pl.hp=Math.min(G.pl.hp+2,G.pl.maxHp);
-  msg('💤 You rest briefly and recover 1 heart.','mi');
+  tick(3); G.pl.hp=Math.min(G.pl.hp+2,G.pl.maxHp);
+  msg('💤 You rest and recover 1 heart.','mi');
   if(G.time.isNight) trySpawn();
   draw();
 }
@@ -1177,13 +1324,9 @@ function doRest(){
 function doLook(){
   if(G.screen!=='play'||G.done) return;
   reveal(G.pl.x,G.pl.y,5); tick();
-  const nearby=G.ents.filter(e=>{
-    if(e.gone||e.dead) return false;
-    return Math.abs(e.x-G.pl.x)+Math.abs(e.y-G.pl.y)<=5;
-  });
+  const nearby=G.ents.filter(e=>!e.gone&&!e.dead&&Math.abs(e.x-G.pl.x)+Math.abs(e.y-G.pl.y)<=5);
   if(!nearby.length) msg('👁️ The forest stretches endlessly around you...','mi');
-  else msg(`👁️ Nearby: ${nearby.map(e=>EEM[e.tp]+' '+e.tp).join(', ')}`,
-           G.time.isNight?'md':'mi');
+  else msg(`👁️ Nearby: ${nearby.map(e=>EEM[e.tp]+' '+e.tp).join(', ')}`,G.time.isNight?'md':'mi');
   if(G.time.isNight) msg('🌙 The shadows writhe. Stay alert!','md');
   draw();
 }
@@ -1193,24 +1336,29 @@ function doLook(){
 // ╚══════════════════════════════════════════════════════════╝
 function triggerVictory(){
   G.done=true; G.screen='win';
-  const tc=G.triforce.filter(t=>t).length;
-  const oc=G.opOpen.filter(u=>u).length;
+  const finalScore=saveScore();
+  const tc=G.triforce.filter(t=>t).length, oc=G.opOpen.filter(u=>u).length;
+  const dm=DIFF_MULT[G.diff]||DIFF_MULT.normal;
   showO('🚁 RESCUE!',
-    `<div style="font-size:36px;margin:10px 0">🚁</div>
+    `<div style="font-size:36px;margin:8px 0">🚁</div>
      <p style="color:#f0e860;font-size:12px">YOU SURVIVED ${G.totalNights} NIGHTS!</p>
      <p>The rescue helicopter descends through the canopy!</p>
-     <p>Hero: <span style="color:#f0c040">${G.pl.name}</span></p>
-     <hr style="border-color:#2d5a1b;margin:10px 0">
+     <p>Hero: <span style="color:#f0c040">${G.pl.name}</span>
+        (${G.diff} difficulty)</p>
+     <hr style="border-color:#2d5a1b;margin:8px 0">
      <p>🔱 Triforce: ${tc}/3 ${tc===3?'🏆 COMPLETE!':''}</p>
      <p>🏰 Outposts: ${oc}/5 unlocked</p>
      <p>💎 Rupees: ${G.pl.rupees}</p>
-     <p style="font-size:7px;color:#90a890;margin-top:8px">The legend of ${G.pl.name} will be remembered in Hyrule forever.</p>`,
+     <hr style="border-color:#c09020;margin:8px 0">
+     <p style="font-size:11px;color:#f0c040">⭐ FINAL SCORE: ${finalScore.toLocaleString()}</p>
+     <p style="font-size:7px;color:#a0b890">(Nights×50 + Rupees + Triforce + Outposts) × ${dm[3]}x</p>
+     <p style="font-size:6px;color:#90a890;margin-top:6px">Score saved to leaderboard!</p>`,
     [{t:'🏆 Play Again',f:'location.reload()',cls:'btn-gold'}]);
-  msg(`🚁 THE RESCUE HELICOPTER HAS ARRIVED! YOU SURVIVED ${G.totalNights} NIGHTS!`,'mw');
+  msg(`🚁 RESCUED! Score: ${finalScore.toLocaleString()}`,'mw');
 }
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║                    OVERLAY                              ║
+// ║                   OVERLAY                               ║
 // ╚══════════════════════════════════════════════════════════╝
 function showO(title,content,btns){
   document.getElementById('oTitle').textContent=title;
@@ -1221,19 +1369,14 @@ function showO(title,content,btns){
 }
 function closeO(){
   document.getElementById('overlay').classList.remove('on');
-  G.screen='play';
-  draw();
+  G.screen='play'; draw();
 }
 
-// ╔══════════════════════════════════════════════════════════╗
-// ║                   MESSAGES                              ║
-// ╚══════════════════════════════════════════════════════════╝
 function msg(text,cls='mi'){
   const log=document.getElementById('msgLog');
   const d=document.createElement('div');
   d.className=cls; d.textContent=text;
-  log.appendChild(d);
-  log.scrollTop=log.scrollHeight;
+  log.appendChild(d); log.scrollTop=log.scrollHeight;
   while(log.children.length>60) log.removeChild(log.firstChild);
 }
 
@@ -1241,27 +1384,30 @@ function msg(text,cls='mi'){
 // ║                  KEYBOARD INPUT                         ║
 // ╚══════════════════════════════════════════════════════════╝
 document.addEventListener('keydown',e=>{
-  if(G.screen==='combat') return;
+  // Never intercept keys while the user is typing in any text input
+  const active=document.activeElement;
+  if(active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA')) return;
+  if(!G||!G.screen||G.screen==='combat') return;
   const ovOpen=document.getElementById('overlay').classList.contains('on');
   if(ovOpen){if(e.key==='Escape') closeO(); return;}
   switch(e.key){
-    case 'ArrowUp':    case 'w': case 'W': e.preventDefault(); move(0,-1); break;
-    case 'ArrowDown':  case 's': case 'S': e.preventDefault(); move(0,1);  break;
-    case 'ArrowLeft':  case 'a': case 'A': e.preventDefault(); move(-1,0); break;
-    case 'ArrowRight': case 'd': case 'D': e.preventDefault(); move(1,0);  break;
-    case 'i': case 'I': openInvScreen(); break;
-    case 'f': case 'F': doForage(); break;
-    case 'r': case 'R': doRest(); break;
-    case ' ': e.preventDefault(); doLook(); break;
+    case 'ArrowUp':   case 'w':case 'W': e.preventDefault();move(0,-1);break;
+    case 'ArrowDown': case 's':case 'S': e.preventDefault();move(0,1); break;
+    case 'ArrowLeft': case 'a':case 'A': e.preventDefault();move(-1,0);break;
+    case 'ArrowRight':case 'd':case 'D': e.preventDefault();move(1,0); break;
+    case 'i':case 'I': openInvScreen(); break;
+    case 'f':case 'F': doForage(); break;
+    case 'r':case 'R': doRest(); break;
+    case ' ': e.preventDefault();doLook(); break;
   }
 });
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║           ANIMAL SPAWNING (daytime)                     ║
+// ║          ANIMAL SPAWNING (daytime ambience)             ║
 // ╚══════════════════════════════════════════════════════════╝
 setInterval(()=>{
   if(!G||!G.screen||G.screen!=='play'||G.time.isNight||G.done) return;
-  if(Math.random()>0.35) return;
+  if(Math.random()>.35) return;
   const types=[E.DEER,E.RAB,E.FOX];
   const tp=types[Math.floor(Math.random()*types.length)];
   const ang=Math.random()*Math.PI*2,dist=3+Math.floor(Math.random()*4);
@@ -1272,40 +1418,37 @@ setInterval(()=>{
   G.ents=G.ents.filter(e=>![E.DEER,E.RAB,E.FOX].includes(e.tp));
   G.ents.push({tp,x:ex,y:ey,id:`an_${Date.now()}`});
   reveal(ex,ey,2); draw();
-},4000);
+},4500);
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║                   START GAME                            ║
+// ║                    START GAME                           ║
 // ╚══════════════════════════════════════════════════════════╝
 function startGame(){
   const name=(document.getElementById('nameInput').value.trim()||'Hero').substring(0,12);
   const totalNights=parseInt(document.getElementById('nightSlider').value)||100;
   document.getElementById('nameScreen').style.display='none';
   document.getElementById('app').style.display='flex';
-
-  cvs=document.getElementById('gameCanvas');
-  ctx=cvs.getContext('2d');
+  cvs=document.getElementById('gameCanvas'); ctx=cvs.getContext('2d');
   function resize(){
     const w=document.getElementById('canvasWrap');
     cvs.width=w.clientWidth; cvs.height=w.clientHeight;
     if(G&&G.screen) draw();
   }
-  resize();
-  window.addEventListener('resize',resize);
-
+  resize(); window.addEventListener('resize',resize);
   newGame(name,totalNights,diffKey);
-
-  msg(`🌲 Welcome, ${name}! Survive ${totalNights} nights. The helicopter comes after that.`,'ml');
-  msg(`Use ARROW KEYS or WASD to move. Step onto items/chests to interact.`,'mi');
-  msg(`🪓 Craft a Stone Axe (Wood+Stone) to chop through trees.`,'mw');
-  msg(`🚣 Find a Boat near shorelines to sail across water.`,'mw');
-  msg(`🌙 Days advance as you act. Find outpost keys hidden around the forest.`,'mi');
+  msg(`🌲 Welcome, ${name}! Survive ${totalNights} nights. Rescue comes after.`,'ml');
+  msg('ARROW KEYS/WASD to move · Step on items to collect them.','mi');
+  msg('🪓 Craft Stone Axe (Wood+Stone) to chop trees · 🚣 Find Boats near water.','mw');
+  msg('🔱 Find all 3 Triforce pieces for a powerful golden blessing!','mw');
   draw();
 }
 
 document.getElementById('nameInput').addEventListener('keydown',e=>{
   if(e.key==='Enter') startGame();
 });
+
+// Load leaderboard on page load
+renderLeaderboard();
 </script>
 </body>
 </html>
