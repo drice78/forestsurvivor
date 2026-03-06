@@ -22,6 +22,7 @@ GAME_HTML = r"""
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Forest Survivor: Zelda Edition</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -79,6 +80,7 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 #nightCtr  { font-size:8px; color:#c0d8ff; margin-left:auto; }
 #scoreDisp { font-size:7px; color:#a0f0a0; }
 #rupeeDisp { font-size:8px; color:#00e8ff; }
+#mobileStats { display:none; align-items:center; gap:8px; font-size:7px; margin-left:auto; }
 
 #mainRow { display:flex; flex:1; overflow:hidden; }
 #canvasWrap { position:relative; flex:1; overflow:hidden; background:#0a1a0a; }
@@ -129,6 +131,27 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 #minimap { display:block; margin:0 auto; border:1px solid #2d5a1b;
   border-radius:2px; image-rendering:pixelated; }
 .mmLegend { font-size:5px; color:#507050; line-height:1.9; margin-top:3px; }
+
+/* ── D-pad controls ── */
+#dpad { display:none; grid-template-columns:repeat(3,44px); grid-template-rows:repeat(3,44px);
+  gap:3px; padding:8px; flex-shrink:0; align-self:center; border-right:2px solid #2d5a1b; }
+.dpBtn { width:44px; height:44px; background:#0d280d; border:2px solid #2d5a1b;
+  border-radius:9px; color:#90d878; font-size:18px; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; font-family:inherit;
+  -webkit-tap-highlight-color:transparent; touch-action:manipulation; user-select:none; }
+.dpBtn:active { background:#2a6a2a; transform:scale(.86); }
+.dpBlank { visibility:hidden; pointer-events:none; width:44px; height:44px; }
+/* show D-pad only on touch/coarse-pointer devices */
+@media (pointer:coarse) { #dpad { display:grid; } #bottomRow { height:130px; } }
+/* mobile responsive layout */
+@media (max-width:640px) {
+  #uiPanel { display:none; }
+  #mobileStats { display:flex !important; }
+  #topTitle { display:none; }
+  #bottomRow { height:130px; }
+  #actionBar { width:160px; }
+  #actionBar .btn { font-size:6px; padding:6px 4px; min-height:30px; }
+}
 
 /* bottom row */
 #bottomRow { height:95px; background:#050e05; border-top:2px solid #2d5a1b;
@@ -236,6 +259,12 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
     <div id="nightCtr">Night: 0 / 100</div>
     <div id="scoreDisp">⭐ 0</div>
     <div id="rupeeDisp">💎 0</div>
+    <span id="mobileStats">
+      <span id="msHp">❤️ 12</span>
+      <span id="msLv">Lv1</span>
+      <span id="msRup">💎 0</span>
+      <span id="msNight">🌙 0/100</span>
+    </span>
   </div>
 
   <div id="mainRow">
@@ -305,6 +334,18 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
   </div>
 
   <div id="bottomRow">
+    <!-- D-pad (shown on touch devices via CSS) -->
+    <div id="dpad">
+      <div class="dpBlank"></div>
+      <button class="dpBtn" id="dpUp"   aria-label="Move Up">▲</button>
+      <div class="dpBlank"></div>
+      <button class="dpBtn" id="dpLeft" aria-label="Move Left">◀</button>
+      <div class="dpBlank"></div>
+      <button class="dpBtn" id="dpRight" aria-label="Move Right">▶</button>
+      <div class="dpBlank"></div>
+      <button class="dpBtn" id="dpDown" aria-label="Move Down">▼</button>
+      <div class="dpBlank"></div>
+    </div>
     <div id="msgLog"></div>
     <div id="actionBar">
       <button class="btn"       onclick="doForage()">🌿 Forage (F)</button>
@@ -890,6 +931,16 @@ function updateHUD(){
     G.opOpen.map((u,i)=>
       `<span style="color:${u?'#00ff80':'#ff6060'}">${u?'🏰✅':'🏰🔒'}</span> <span style="color:${u?'#a0d890':'#a07070'};font-size:6px">${OP_NAMES[i]}</span>`
     ).join('<br>');
+
+  // Mobile compact stats (top bar on small screens)
+  const msHp=document.getElementById('msHp');
+  const msLv=document.getElementById('msLv');
+  const msRup=document.getElementById('msRup');
+  const msNight=document.getElementById('msNight');
+  if(msHp)    msHp.textContent=`❤️ ${G.pl.hp}/${G.pl.maxHp}`;
+  if(msLv)    msLv.textContent=`Lv${G.pl.level}`;
+  if(msRup)   msRup.textContent=`💎 ${G.pl.rupees}`;
+  if(msNight) msNight.textContent=`🌙 ${G.time.night}/${G.totalNights}`;
 }
 
 // ╔══════════════════════════════════════════════════════════╗
@@ -1073,9 +1124,9 @@ function showLevelUp(){
     `<p style="color:#60e060">You've grown stronger, hero!</p>
      ${milestone?`<p style="color:#f0c040">🌟 Milestone Level 5!</p>`:''}
      <p>Choose your advancement:</p>`,
-    [{t:`⚔️ +1 ATK (${G.pl.atk}→${G.pl.atk+1})`,f:'chooseUpgrade("atk")',cls:'btn-red'},
-     {t:`🛡️ +1 DEF (${G.pl.def}→${G.pl.def+1})`,f:'chooseUpgrade("def")'},
-     {t:`❤️ +2 Max HP (${G.pl.maxHp}→${G.pl.maxHp+2})`,f:'chooseUpgrade("hp")',cls:'btn-gold'}]);
+    [{t:`⚔️ +1 ATK (${G.pl.atk}→${G.pl.atk+1})`,f:"chooseUpgrade('atk')",cls:'btn-red'},
+     {t:`🛡️ +1 DEF (${G.pl.def}→${G.pl.def+1})`,f:"chooseUpgrade('def')"},
+     {t:`❤️ +2 Max HP (${G.pl.maxHp}→${G.pl.maxHp+2})`,f:"chooseUpgrade('hp')",cls:'btn-gold'}]);
 }
 
 function chooseUpgrade(type){
@@ -1808,6 +1859,41 @@ function startGame(){
   msg('ARROW KEYS/WASD to move · Step on items to collect them.','mi');
   msg('🪓 Craft Stone Axe (Wood+Stone) to chop trees · 🚣 Find Boats near water.','mw');
   msg('🔱 Find all 3 Triforce pieces for a powerful golden blessing!','mw');
+
+  // ── D-pad button listeners ──
+  function dpMove(dx,dy){
+    if(!G||!G.screen||G.screen==='combat') return;
+    const ovOpen=document.getElementById('overlay').classList.contains('on');
+    if(ovOpen) return;
+    move(dx,dy);
+  }
+  const dpMap={dpUp:[0,-1],dpDown:[0,1],dpLeft:[-1,0],dpRight:[1,0]};
+  Object.entries(dpMap).forEach(([id,[dx,dy]])=>{
+    const btn=document.getElementById(id);
+    if(!btn) return;
+    // touchstart fires before the 300 ms click delay — use it for responsive feel
+    btn.addEventListener('touchstart',e=>{e.preventDefault();dpMove(dx,dy);},{passive:false});
+    btn.addEventListener('click',()=>dpMove(dx,dy));
+  });
+
+  // ── Swipe detection on canvas ──
+  let _tx=0,_ty=0;
+  cvs.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1) return;
+    _tx=e.touches[0].clientX; _ty=e.touches[0].clientY;
+  },{passive:true});
+  cvs.addEventListener('touchend',e=>{
+    if(e.changedTouches.length!==1) return;
+    const dx=e.changedTouches[0].clientX-_tx;
+    const dy=e.changedTouches[0].clientY-_ty;
+    const adx=Math.abs(dx), ady=Math.abs(dy);
+    if(Math.max(adx,ady)<24) return; // too short — treat as tap
+    const ovOpen=document.getElementById('overlay').classList.contains('on');
+    if(ovOpen){closeO();return;}
+    if(!G||!G.screen||G.screen==='combat') return;
+    if(adx>ady) move(dx>0?1:-1,0); else move(0,dy>0?1:-1);
+  },{passive:true});
+
   draw();
 }
 
@@ -1822,4 +1908,4 @@ renderLeaderboard();
 </html>
 """
 
-components.html(GAME_HTML, height=760, scrolling=False)
+components.html(GAME_HTML, height=800, scrolling=False)
