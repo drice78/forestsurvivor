@@ -449,6 +449,8 @@ const LEVEL_CFG=[null, // 1-indexed
     desc:'Ancient trees hide terrible monsters...',
     monPool:[E.BOK,E.KEE,E.BOK,E.SKU],
     bossType:'forestwarden',
+    intro:'Ancient spirits haunt this twisted woodland. Cursed creatures serve the Forest Warden who commands the shadows.',
+    goal:'⚔️ Defeat the Forest Warden to open the descent portal. Explore outposts for supplies and keys.',
     TCOL:{[T.GR]:'#274f18',[T.TR]:'#1a4509',[T.DT]:'#0e2a05',[T.WA]:'#19366a',[T.ST]:'#444444',[T.SA]:'#7a6a3a',[T.TH]:'#1a3306'},
     MMAP:{[T.GR]:[39,79,24],[T.TR]:[26,69,9],[T.DT]:[14,42,5],[T.WA]:[25,54,106],[T.ST]:[85,85,85],[T.SA]:[122,106,58],[T.TH]:[26,51,6]},
     TEM:{[T.TR]:'🌲',[T.DT]:'🌳',[T.ST]:'🪨',[T.TH]:'🌿'},
@@ -460,6 +462,8 @@ const LEVEL_CFG=[null, // 1-indexed
     desc:'Deep tunnels riddled with rock and shadow...',
     monPool:[E.SKU,E.LIZ,E.CHUCHU,E.SKU],
     bossType:'stonegolem',
+    intro:'A network of tunnels carved by unknown hands. Lava seeps through the cracks and Rock ChuChus patrol every passage.',
+    goal:'⚔️ Defeat the Stone Golem to descend further. Lava Boots let you cross the lava flows.',
     TCOL:{[T.GR]:'#252530',[T.TR]:'#18182a',[T.DT]:'#100f1a',[T.WA]:'#6b2800',[T.ST]:'#5a5a70',[T.SA]:'#3a3848',[T.TH]:'#1a1825'},
     MMAP:{[T.GR]:[37,37,48],[T.TR]:[24,24,42],[T.DT]:[16,15,26],[T.WA]:[107,40,0],[T.ST]:[90,90,112],[T.SA]:[58,56,72],[T.TH]:[26,24,37]},
     TEM:{[T.TR]:'🪨',[T.DT]:'💎',[T.ST]:'🗿',[T.TH]:'🕸️'},
@@ -471,6 +475,8 @@ const LEVEL_CFG=[null, // 1-indexed
     desc:'Rivers of molten rock and ancient forges of war...',
     monPool:[E.LIZ,E.WIZZROBE,E.LIZ,E.CHUCHU],
     bossType:'firedrake',
+    intro:'Ancient forges roar with molten fire. Wizzrobes and Lizalfos command the scorched pathways in the Drake\'s name.',
+    goal:'⚔️ Slay the Fire Drake to proceed. Rivers of lava are everywhere — Lava Boots are essential here.',
     TCOL:{[T.GR]:'#3a1a08',[T.TR]:'#200800',[T.DT]:'#200a00',[T.WA]:'#e83a00',[T.ST]:'#4a2818',[T.SA]:'#5a3020',[T.TH]:'#280800'},
     MMAP:{[T.GR]:[58,26,8],[T.TR]:[32,8,0],[T.DT]:[32,10,0],[T.WA]:[232,58,0],[T.ST]:[74,40,24],[T.SA]:[90,48,32],[T.TH]:[40,8,0]},
     TEM:{[T.TR]:'🌋',[T.DT]:'🔥',[T.ST]:'⛏️',[T.TH]:'🌑'},
@@ -482,6 +488,8 @@ const LEVEL_CFG=[null, // 1-indexed
     desc:'Shadow-cloaked battlements where dark knights patrol...',
     monPool:[E.DARKKNIGHT,E.WIZZROBE,E.DARKKNIGHT,E.PHANTOM],
     bossType:'shadowknight',
+    intro:'A black fortress where Dark Knights march in eternal patrol. Phantoms vanish and reappear to ambush the unwary.',
+    goal:'⚔️ Defeat the Shadow Knight to reach the final abyss. Phantoms and Dark Knights guard every corridor.',
     TCOL:{[T.GR]:'#1a1a2a',[T.TR]:'#0f0f20',[T.DT]:'#08080f',[T.WA]:'#0a0a50',[T.ST]:'#353545',[T.SA]:'#252535',[T.TH]:'#0d0d1a'},
     MMAP:{[T.GR]:[26,26,42],[T.TR]:[15,15,32],[T.DT]:[8,8,15],[T.WA]:[10,10,80],[T.ST]:[53,53,69],[T.SA]:[37,37,53],[T.TH]:[13,13,26]},
     TEM:{[T.TR]:'🗼',[T.DT]:'⚫',[T.ST]:'🔩',[T.TH]:'🌀'},
@@ -493,6 +501,8 @@ const LEVEL_CFG=[null, // 1-indexed
     desc:'The final darkness. The Dark Lord awaits his challenger...',
     monPool:[E.DARKKNIGHT,E.PHANTOM,E.WIZZROBE,E.DARKKNIGHT],
     bossType:'darklord',
+    intro:'The final darkness. Void creatures of pure shadow serve the Dark Lord at the bottom of all things.',
+    goal:'⚔️ Face the Dark Lord and claim your title as Dungeon Master. This is the final battle.',
     TCOL:{[T.GR]:'#150010',[T.TR]:'#0a0008',[T.DT]:'#050005',[T.WA]:'#300030',[T.ST]:'#3a0040',[T.SA]:'#200025',[T.TH]:'#0a0010'},
     MMAP:{[T.GR]:[21,0,16],[T.TR]:[10,0,8],[T.DT]:[5,0,5],[T.WA]:[48,0,48],[T.ST]:[58,0,64],[T.SA]:[32,0,37],[T.TH]:[10,0,16]},
     TEM:{[T.TR]:'💀',[T.DT]:'🌑',[T.ST]:'💠',[T.TH]:'🌀'},
@@ -526,8 +536,9 @@ const ITEMS={
   'Spider Silk':     {ic:'🕸️', tp:'mat',    desc:'Strong silk from a Skulltula.'},
   'Lantern':         {ic:'🏮', tp:'tool',   desc:'Lights up the night. Reduces monster spawns!'},
   'Map Fragment':    {ic:'🗺️', tp:'tool',   desc:'Reveals a hidden area of the map.'},
-  'Arrows (5)':      {ic:'🏹', tp:'ammo',   desc:'A bundle of 5 arrows.'},
+  'Arrows (5)':      {ic:'🏹', tp:'ammo',   desc:'5 arrows. Use in combat via the 🏹 Arrow button for ranged damage that bypasses enemy DEF!'},
   'Boat':            {ic:'🚣', tp:'boat',   desc:'A wooden rowboat. Lets you sail across water!'},
+  'Lava Boots':      {ic:'🥾', tp:'lavaboots', desc:'Fire-forged boots. Walk on lava, water, and other liquid tiles without a boat!'},
   'Outpost Key 1':   {ic:'🗝️', tp:'key', opens:0, desc:'Key to Outpost Oaken.'},
   'Outpost Key 2':   {ic:'🗝️', tp:'key', opens:1, desc:'Key to Outpost Hollow.'},
   'Outpost Key 3':   {ic:'🗝️', tp:'key', opens:2, desc:'Key to Outpost Grimrock.'},
@@ -540,6 +551,7 @@ const ITEMS={
 
 const RECIPES=[
   {result:'Stone Axe',    needs:['Wood','Stone'],              desc:'Chop trees & fight'},
+  {result:'Lava Boots',   needs:['Monster Horn','Monster Horn','Stone'], desc:'Walk on lava floors!'},
   {result:'Deku Stick',   needs:['Wood','Wood'],               desc:'Basic weapon'},
   {result:'Wooden Shield',needs:['Wood','Wood','Wood'],        desc:'Light defense'},
   {result:'Iron Sword',   needs:['Monster Fang','Stone','Wood'],desc:'Strong blade'},
@@ -580,6 +592,14 @@ const SHOP=[
   {name:'Boat',            price:60},
 ];
 
+const SELL={
+  'Wood':3,'Stone':3,'Monster Fang':4,'Monster Horn':5,'Keese Wing':4,'Spider Silk':5,
+  'Berries':2,'Stamella Shroom':3,'Hylian Shroom':4,'Red Potion':8,'Blue Potion':15,
+  'Arrows (5)':4,'Lantern':12,'Deku Stick':4,'Wooden Sword':6,'Iron Sword':12,
+  'Wooden Shield':5,'Iron Shield':10,'Master Sword':20,"Biggoron's Sword":25,
+  'Hylian Shield':15,'Stone Axe':8,'Boat':12,'Fairy':8,'Map Fragment':5,'Lava Boots':10,
+};
+
 // ── Seeded noise for terrain ────────────────────────────────
 let _nSeed=0;
 function setNoiseSeed(s){_nSeed=s;}
@@ -605,7 +625,7 @@ function newGame(name,totalNights,diff){
       name, x:md.cx, y:md.cy,
       hp:12, maxHp:12, atk:1, def:0, rupees:10,
       inv:[], eq:{w:null,a:null},
-      hasFairy:false, hasLantern:false, hasBoat:false, hasAxe:false, onWater:false,
+      hasFairy:false, hasLantern:false, hasBoat:false, hasAxe:false, hasLavaBoots:false, onWater:false,
       xp:0, level:1, xpCap:50,
     },
     map:md.tiles, ents:md.ents,
@@ -1055,8 +1075,8 @@ function updateHUD(){
   if(xpFill) xpFill.style.width=(G.pl.level>=10?100:Math.min(100,Math.round(G.pl.xp/G.pl.xpCap*100)))+'%';
   if(xpTxt)  xpTxt.textContent=G.pl.level>=10?'MAX LEVEL':`${G.pl.xp} / ${G.pl.xpCap} XP`;
 
-  document.getElementById('eqW').textContent=G.pl.eq.w||(G.pl.atk>1?`ATK ${G.pl.atk}`:'Fists');
-  document.getElementById('eqA').textContent=G.pl.eq.a||(G.pl.def>0?`DEF ${G.pl.def}`:'None');
+  document.getElementById('eqW').textContent=G.pl.eq.w?`${G.pl.eq.w} ⚔️${G.pl.atk}`:(G.pl.atk>1?`ATK ${G.pl.atk}`:'Fists');
+  document.getElementById('eqA').textContent=G.pl.eq.a?`${G.pl.eq.a} 🛡️${G.pl.def}`:(G.pl.def>0?`DEF ${G.pl.def}`:'None');
   document.getElementById('invCnt').textContent=G.pl.inv.length;
 
   const il=document.getElementById('invList');
@@ -1124,7 +1144,7 @@ function tick(n=1){
 function canWalk(x,y){
   if(x<0||x>=MW||y<0||y>=MH) return false;
   const t=G.map[y][x];
-  if(t===T.WA) return G.pl.hasBoat;
+  if(t===T.WA) return G.pl.hasBoat||G.pl.hasLavaBoots;
   return t!==T.TR&&t!==T.DT;
 }
 
@@ -1151,8 +1171,9 @@ function move(dx,dy){
     }
     draw(); return;
   }
-  if(t===T.WA&&!G.pl.hasBoat){
-    msg('🌊 Water blocks the way! Find a 🚣 Boat near the shoreline to sail.','mw');
+  if(t===T.WA&&!G.pl.hasBoat&&!G.pl.hasLavaBoots){
+    const lvlWN=(LEVEL_CFG[G.dungeonLevel||1]||LEVEL_CFG[1]).waterName||'Water';
+    msg(`${lvlWN==='Lava'?'🔥':'🌊'} ${lvlWN} blocks the way! Find a 🚣 Boat or craft 🥾 Lava Boots.`,'mw');
     draw(); return;
   }
 
@@ -1344,6 +1365,7 @@ function quickUse(i){
   else if(d.tp==='armor'){G.pl.eq.a=nm;G.pl.def=d.def;msg(`Equipped ${nm} (DEF +${d.def}).`,'mi');}
   else if(d.tp==='use'){useConsumable(i);}
   else if(d.tp==='boat'){G.pl.hasBoat=true;msg('🚣 Boat ready! Walk into water to sail.','ms');}
+  else if(d.tp==='lavaboots'){G.pl.hasLavaBoots=true;msg('🥾 Lava Boots equipped! You can now walk on lava and water.','ms');}
   else if(d.tp==='tool'&&nm==='Lantern'){G.pl.hasLantern=true;msg('🏮 Lantern lit! Monsters will be less bold.','ms');}
   else if(d.tp==='tool'&&nm==='Map Fragment'){G.pl.inv.splice(i,1);revealFragment();msg('🗺️ Map fragment revealed a new area!','ms');}
   else{msg(`${nm}: ${d.desc}`,'mi');}
@@ -1368,6 +1390,7 @@ function dropItem(i){
   if(G.pl.eq.w===nm){G.pl.eq.w=null;G.pl.atk=1;G.pl.hasAxe=false;}
   if(G.pl.eq.a===nm){G.pl.eq.a=null;G.pl.def=0;}
   if(nm==='Boat'){G.pl.hasBoat=false;G.pl.onWater=false;}
+  if(nm==='Lava Boots'){G.pl.hasLavaBoots=false;}
   msg(`Dropped ${nm}.`,'mi'); draw();
 }
 
@@ -1487,7 +1510,34 @@ function openShop(){
       ${can?`<button class="btn btn-gold" style="padding:2px 8px;margin-left:4px" onclick="buy(${i})">Buy</button>`:''}</span>
     </div>`;
   });
-  showO('🧙 Wandering Merchant',html,[{t:'Leave',f:'closeO()'}]);
+  showO('🧙 Wandering Merchant',html,[{t:'💰 Sell Items',f:'openSell()',cls:'btn-gold'},{t:'Leave',f:'closeO()'}]);
+}
+
+function openSell(){
+  const sellable=G.pl.inv.map((nm,i)=>({nm,i,price:SELL[nm]})).filter(x=>x.price&&x.nm!==G.pl.eq.w&&x.nm!==G.pl.eq.a);
+  if(sellable.length===0){
+    showO('💰 Sell Items','<p style="color:#a0a0a0">Nothing to sell. (Equipped items and quest items cannot be sold.)</p>',[{t:'← Back',f:'openShop()'}]);
+    return;
+  }
+  let html=`<p>The merchant eyes your belongings greedily.</p><p style="color:#00e8ff">💎 ${G.pl.rupees} rupees</p>`;
+  sellable.forEach(({nm,i,price})=>{
+    const d=ITEMS[nm]||{ic:'?'};
+    html+=`<div style="border:1px solid #2d5a1b;padding:5px;margin:3px;display:flex;justify-content:space-between;align-items:center;border-radius:3px">
+      <span style="font-size:8px">${d.ic} ${nm}</span>
+      <span><span style="font-size:7px;color:#f0c040">💎${price}</span>
+      <button class="btn btn-gold" style="padding:2px 8px;margin-left:4px" onclick="sellItem(${i})">Sell</button></span>
+    </div>`;
+  });
+  showO('💰 Sell Items',html,[{t:'← Back to Shop',f:'openShop()'}]);
+}
+
+function sellItem(i){
+  const nm=G.pl.inv[i], price=SELL[nm];
+  if(!price){msg('Cannot sell that item.','mw');return;}
+  G.pl.inv.splice(i,1);
+  G.pl.rupees+=price;
+  msg(`Sold ${nm} for 💎${price}!`,'ms');
+  openSell();
 }
 
 function buy(i){
@@ -1549,8 +1599,13 @@ function showCombat(){
     </div>
     ${roundLine}${spWarn}
     <div style="font-size:7px;color:#f0c040;margin-top:3px">Night ${G.time.night}${G.triforceBlessing>0?' — 🔱 BLESSED':''}</div>`,
-    [{t:'⚔️ Attack',f:'cAttack()',cls:'btn-red'},{t:'🛡️ Defend',f:'cDefend()'},
-     {t:'🧪 Heal',f:'cHeal()'},{t:'💨 Flee',f:'cFlee()'}]);
+    (()=>{
+      const _b=[{t:'⚔️ Attack',f:'cAttack()',cls:'btn-red'},{t:'🛡️ Defend',f:'cDefend()'}];
+      const _ac=G.pl.inv.filter(n=>n==='Arrows (5)').length;
+      if(_ac>0) _b.push({t:`🏹 Arrow (${_ac})`,f:'cArrow()',cls:'btn-gold'});
+      _b.push({t:'🧪 Heal',f:'cHeal()'},{t:'💨 Flee',f:'cFlee()'});
+      return _b;
+    })());
 }
 
 function d6(){return 1+Math.floor(Math.random()*6);}
@@ -1636,6 +1691,37 @@ function cFlee(){
     if(G.pl.hp<=0){loseCombat();return;}
     showCombat();
   }
+}
+
+function cArrow(){
+  const e=G.combat;
+  const ai=G.pl.inv.indexOf('Arrows (5)');
+  if(ai<0){msg('No arrows in inventory!','mw');showCombat();return;}
+  G.combatRound++;
+  G.pl.inv.splice(ai,1);
+  const bonus=G.triforceBlessing>0?3:0;
+  const pd=d6()+G.pl.atk+bonus+3; // +3 ranged bonus, bypasses enemy DEF
+  e.hp-=pd;
+  const remaining=G.pl.inv.filter(n=>n==='Arrows (5)').length;
+  let m=`🏹 Arrow flies true! ${pd} ranged dmg to ${e.name}! (${remaining} bundle${remaining!==1?'s':''} left)`;
+  if(e.hp<=0){winCombat(e,m);return;}
+  // Enemy counter-attack
+  const isBoss=e.isBoss;
+  const sp=isBoss?(BOSSES[e.bossType]||{}).special:null;
+  const doSpecial=sp&&(G.combatRound%sp.every===0);
+  let ed=0;
+  if(doSpecial){
+    if(sp.type==='flame'){ed=sp.dmg;m+=` | 🔥 ${sp.name}! ${ed} fixed dmg!`;}
+    else if(sp.type==='spin'){const h1=Math.max(0,d6()+e.atk-G.pl.def),h2=Math.max(0,d6()+e.atk-G.pl.def);ed=h1+h2;m+=` | 🌀 ${sp.name}! ${h1}+${h2}=${ed} dmg!`;}
+  } else {
+    ed=Math.max(0,d6()+e.atk-G.pl.def);
+    m+=` | ${e.name} retaliates for ${ed}!`;
+  }
+  const finalEd=G.cheats.nayru?0:ed;
+  G.pl.hp-=finalEd;
+  msg(m+(G.cheats.nayru?' 🛡️ Nayru protects you!':''),'md');
+  if(G.pl.hp<=0){loseCombat();return;}
+  showCombat();
 }
 
 function winCombat(e,lastMsg){
@@ -2034,6 +2120,18 @@ function triggerVictory(){
   msg(`🚁 RESCUED! Score: ${finalScore.toLocaleString()}`,'mw');
 }
 
+function showFloor1Intro(){
+  if(!G) return;
+  const cfg=LEVEL_CFG[1];
+  showO(`Floor 1: ${cfg.name}`,
+    `<div style="font-size:32px;margin:6px 0">${cfg.icon}</div>
+     <p style="color:#f0c040;font-size:11px;margin:4px 0">${cfg.name}</p>
+     <p style="font-size:7px;color:#c0d0b0;line-height:1.8;margin:6px 0">${cfg.intro||cfg.desc}</p>
+     <div style="background:#0a1a0a;border:1px solid #3a5a1a;border-radius:3px;padding:6px;margin:6px 0;font-size:7px;color:#80f080">${cfg.goal||'Defeat the floor guardian to descend.'}</div>
+     <p style="color:#60e8ff;font-size:6px">ARROW KEYS or D-PAD to move · Step on items to collect.</p>`,
+    [{t:'Begin!', f:'closeO()', cls:'btn-gold'}]);
+}
+
 function restartGame(){
   G=null;
   closeO();
@@ -2043,34 +2141,96 @@ function restartGame(){
   renderLeaderboard();
 }
 
+
+function generateStoryEnding(){
+  const tc=G.triforce.filter(t=>t).length;
+  const oc=G.opOpen.filter(u=>u).length;
+  const fl=G.dungeonLevel;
+  const lv=G.pl.level;
+  const rup=G.pl.rupees;
+  const isDM=fl===5&&G.levelBossDefeated;
+  const nights=G.time.night||1;
+
+  let title, story;
+  if(isDM){
+    const tales=[
+      `The dungeon fell silent as ${G.pl.name} emerged from the Shadow Abyss, crown in hand. Bards across Hyrule would sing of this legend for a thousand years.`,
+      `With the Dark Lord vanquished, ${G.pl.name} felt the dungeon's dark power flow inward. They did not leave. They became the dungeon.`,
+      `${G.pl.name} stood atop the conquered abyss. Five floors of darkness, cleared in ${nights} cycles. The title "Dungeon Master" was not just a name — it was destiny fulfilled.`,
+      `The ancient stones crumbled as the Dark Lord fell. ${G.pl.name} walked out into a world that had forgotten the sun. They had not. They had earned it.`
+    ];
+    title='👑 A Legend Is Born';
+    story=tales[Math.floor(Math.random()*tales.length)];
+  } else if(fl>=4){
+    title='🗡️ Fallen Hero';
+    story=`${G.pl.name} reached the fourth floor of the cursed dungeon before the darkness proved too great. Though the Dark Lord survived, ${G.pl.name}'s name was etched into the dungeon walls alongside the greatest of fallen heroes.`;
+  } else if(fl>=3){
+    title='🔥 Forged in Fire';
+    story=`The Lava Forge consumed many warriors before ${G.pl.name}, and it would consume many after. But few reached the forge at all. ${G.pl.name} made it to Floor ${fl} — and that alone is a feat worth remembering.`;
+  } else if(fl>=2){
+    title='🪨 Lost in Stone';
+    story=`The Stone Caverns swallowed ${G.pl.name} whole. Their torch guttered on Floor ${fl} and the darkness closed in. Somewhere in those tunnels, their legend waits to be found.`;
+  } else {
+    title='🌲 Claimed by the Forest';
+    story=`${G.pl.name} entered the Haunted Forest with courage in their heart. The forest keeps its secrets — and now keeps ${G.pl.name} too. Perhaps another hero will follow their trail.`;
+  }
+
+  const lines=[];
+  if(tc===3) lines.push('🔱 United the full Triforce — blessed by Din, Nayru, and Farore.');
+  else if(tc===2) lines.push('🔱 Collected 2 of 3 Triforce pieces — so close to the Golden Power!');
+  else if(tc===1) lines.push('🔱 Found 1 Triforce shard — the goddesses watched over you.');
+  if(oc===5) lines.push('🏰 All five outposts liberated — a true commander of the dungeon.');
+  else if(oc>=3) lines.push(`🏰 ${oc} outposts secured — a strong network of safe havens.`);
+  else if(oc>0) lines.push(`🏰 ${oc} outpost${oc>1?'s':''} unlocked.`);
+  if(lv>=9) lines.push(`⭐ Reached Level ${lv} — a battle-hardened legend.`);
+  else if(lv>=6) lines.push(`⭐ Level ${lv} achieved — a formidable warrior.`);
+  const sword=G.pl.eq.w||'';
+  if(sword==='Master Sword'||G.pl.inv.includes('Master Sword')) lines.push("⚔️ Wielded the legendary Master Sword — evil's true bane.");
+  if(sword==="Biggoron's Sword"||G.pl.inv.includes("Biggoron's Sword")) lines.push("🗡️ Carried Biggoron's Sword — unstoppable might.");
+  const shield=G.pl.eq.a||'';
+  if(shield==='Hylian Shield'||G.pl.inv.includes('Hylian Shield')) lines.push('🛡️ Bore the legendary Hylian Shield.');
+  if(G.pl.hasLavaBoots||G.pl.inv.includes('Lava Boots')) lines.push('🥾 Forged Lava Boots — walked where others could not.');
+  if(rup>=300) lines.push(`💎 Collected ${rup} rupees — a true treasure hunter.`);
+  if(G.triforceBlessing>0) lines.push('✨ The Triforce blessing still shone at the end.');
+  if(G.cheats&&G.cheats.active) lines.push('🎮 Used the Konami blessing — but the dungeon still tested you!');
+
+  return {title, story, lines};
+}
+
 function triggerDungeonMaster(){
   G.done=true;
-  saveScore();
+  const sc=saveScore();
+  const ending=generateStoryEnding();
+  const accLines=ending.lines.length
+    ?`<div style="margin:8px 4px;text-align:left;font-size:6.5px;line-height:2.1;color:#b0d8b0;border-top:1px solid #2d5a1b;padding-top:6px">${ending.lines.map(l=>`• ${l}`).join('<br>')}</div>`
+    :'';
   showO('👑 DUNGEON MASTER! 👑',
-    `<div style="font-size:48px;margin:8px 0;animation:triPulse 1.5s ease-out infinite">👑</div>
-     <p style="color:#f0c040;font-size:12px;margin:8px 0">YOU ARE THE DUNGEON MASTER!</p>
-     <p>The Dark Lord has fallen. The dungeon trembles and bows before you.</p>
-     <p>All five floors have been conquered. The cursed dungeon is yours.</p>
-     <p style="color:#60e8ff">Final Score: ${calcScore().toLocaleString()}</p>`,
-    [{t:'🏆 Submit Score', f:'saveScore();renderLeaderboard();closeO()', cls:'btn-tri'},
-     {t:'▶️ New Game',     f:'restartGame()',                            cls:'btn-gold'}]);
+    `<div style="font-size:48px;margin:6px 0;animation:triPulse 1.5s ease-out infinite">👑</div>
+     <p style="color:#f0c040;font-size:11px;margin:4px 0">${ending.title}</p>
+     <p style="font-size:7px;color:#c8d8c0;line-height:1.9;margin:6px 8px;font-style:italic">"${ending.story}"</p>
+     ${accLines}
+     <div style="margin-top:8px;border-top:1px solid #c09020;padding-top:6px">
+       <p style="color:#f0c040;font-size:10px">⭐ Final Score: ${sc.toLocaleString()}</p>
+       <p style="font-size:6px;color:#80a880">Score saved to leaderboard!</p>
+     </div>`,
+    [{t:'▶️ New Game', f:'restartGame()', cls:'btn-gold'}]);
   msg('👑 YOU ARE THE DUNGEON MASTER! The dark power is yours!','mw');
 }
 
 function descendLevel(){
   const nextLevel=G.dungeonLevel+1;
   if(nextLevel>5){
-    // Should not happen — final victory is triggered on boss defeat
     triggerDungeonMaster();
     return;
   }
   const cfg=LEVEL_CFG[nextLevel];
-  showO(`⬇️ Descending to Floor ${nextLevel}`,
-    `<div style="font-size:32px;margin:8px 0">${cfg.icon}</div>
-     <p style="color:#f0c040;font-size:11px">${cfg.name}</p>
-     <p>${cfg.desc}</p>
-     <p style="color:#60e8ff;font-size:7px">Your stats and inventory carry forward.<br>The floor guardian awaits...</p>`,
-    [{t:`⬇️ Descend to Floor ${nextLevel}`, f:'doDescend()', cls:'btn-gold'}]);
+  showO(`⬇️ Floor ${nextLevel}: ${cfg.name}`,
+    `<div style="font-size:32px;margin:6px 0">${cfg.icon}</div>
+     <p style="color:#f0c040;font-size:11px;margin:4px 0">${cfg.name}</p>
+     <p style="font-size:7px;color:#c0d0b0;line-height:1.8;margin:6px 0">${cfg.intro||cfg.desc}</p>
+     <div style="background:#0a1a0a;border:1px solid #3a5a1a;border-radius:3px;padding:6px;margin:6px 0;font-size:7px;color:#80f080">${cfg.goal||'Defeat the floor guardian to descend.'}</div>
+     <p style="color:#60e8ff;font-size:6px">Your stats and inventory carry forward.</p>`,
+    [{t:`⬇️ Enter Floor ${nextLevel}`, f:'doDescend()', cls:'btn-gold'},{t:'Wait',f:'closeO()'}]);
 }
 
 function doDescend(){
@@ -2289,6 +2449,7 @@ function startGame(){
   newGame(name,totalNights,diffKey);
   msg(`⚔️ Welcome, ${name}! You enter the dungeon. Five floors await.`,'ml');
   msg('Seek the floor guardian and defeat it to descend deeper.','mw');
+  setTimeout(()=>showFloor1Intro(),800);
   msg('ARROW KEYS/WASD to move · Step on items to collect them.','mi');
   msg('🪓 Craft Stone Axe (Wood+Stone) to chop through obstacles.','mi');
   msg('🔱 Find all 3 Triforce pieces for a powerful golden blessing!','mw');
