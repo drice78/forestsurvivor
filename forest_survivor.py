@@ -75,7 +75,10 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 #floorDisp { font-size:8px; color:#d0a0ff; margin-left:auto; }
 #scoreDisp { font-size:7px; color:#a0f0a0; }
 #rupeeDisp { font-size:8px; color:#00e8ff; }
-#floorDisp { font-size:8px; color:#d0a0ff; }
+#floorBanner { position:absolute; top:8px; left:50%; transform:translateX(-50%);
+  background:rgba(0,0,0,.75); color:#f0c040; font-size:9px; padding:3px 12px;
+  border:1px solid #5a4000; border-radius:4px; pointer-events:none; z-index:3;
+  white-space:nowrap; text-shadow:0 0 8px #b08000; letter-spacing:.5px; }
 #mobileStats { display:none; align-items:center; gap:8px; font-size:7px; margin-left:auto; }
 
 #mainRow { display:flex; flex:1; overflow:hidden; }
@@ -261,6 +264,7 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
     <div id="canvasWrap">
       <canvas id="gameCanvas"></canvas>
       <div id="nightVig"></div>
+      <div id="floorBanner">🌲 The Haunted Forest  |  Floor 1/5</div>
       <div id="triFlash"></div>
       <div id="timebar"><div id="timefill"></div></div>
       <div id="overlay">
@@ -881,7 +885,6 @@ function draw(){
     const sx=tx*TS-camX,sy=ty*TS-camY;
     const fog=G.fog[ty][tx];
     let col=fog?'#060e06':lvlTCOL[G.map[ty][tx]]||'#274f18';
-    if(!fog&&G.map[ty][tx]===T.WA&&G.pl.hasBoat) col='#2a5aaa';
     ctx.fillStyle=col; ctx.fillRect(sx,sy,TS,TS);
     if(!fog){
       ctx.strokeStyle='rgba(0,0,0,.12)'; ctx.strokeRect(sx,sy,TS,TS);
@@ -997,6 +1000,8 @@ function updateHUD(){
   document.getElementById('timeDisp').textContent=`${icon} Day ${G.time.night+1} · ${nightWord}`;
   const floorEl=document.getElementById('floorDisp');
   if(floorEl) floorEl.textContent=`Floor: ${G.dungeonLevel||1} / 5${G.levelBossDefeated?' ✅':''}`;
+  const floorBannerEl=document.getElementById('floorBanner');
+  if(floorBannerEl) floorBannerEl.textContent=`${lvlCfgNow.icon} ${lvlCfgNow.name}  |  Floor ${G.dungeonLevel||1}/5${G.levelBossDefeated?' ✅':''}`;
   document.getElementById('rupeeDisp').textContent=`💎 ${G.pl.rupees}`;
   document.getElementById('scoreDisp').textContent=`⭐ ${calcScore().toLocaleString()}`;
 
@@ -2025,8 +2030,17 @@ function triggerVictory(){
      <p style="font-size:11px;color:#f0c040">⭐ FINAL SCORE: ${finalScore.toLocaleString()}</p>
      <p style="font-size:7px;color:#a0b890">(Nights×50 + Rupees + Triforce + Outposts) × ${dm[3]}x</p>
      <p style="font-size:6px;color:#90a890;margin-top:6px">Score saved to leaderboard!</p>`,
-    [{t:'🏆 Play Again',f:'location.reload()',cls:'btn-gold'}]);
+    [{t:'▶️ New Game',f:'restartGame()',cls:'btn-gold'}]);
   msg(`🚁 RESCUED! Score: ${finalScore.toLocaleString()}`,'mw');
+}
+
+function restartGame(){
+  G=null;
+  closeO();
+  document.getElementById('app').style.display='none';
+  document.getElementById('nameScreen').style.display='flex';
+  document.getElementById('nameInput').value='';
+  renderLeaderboard();
 }
 
 function triggerDungeonMaster(){
@@ -2039,7 +2053,7 @@ function triggerDungeonMaster(){
      <p>All five floors have been conquered. The cursed dungeon is yours.</p>
      <p style="color:#60e8ff">Final Score: ${calcScore().toLocaleString()}</p>`,
     [{t:'🏆 Submit Score', f:'saveScore();renderLeaderboard();closeO()', cls:'btn-tri'},
-     {t:'Play Again',      f:'location.reload()',                        cls:'btn-gold'}]);
+     {t:'▶️ New Game',     f:'restartGame()',                            cls:'btn-gold'}]);
   msg('👑 YOU ARE THE DUNGEON MASTER! The dark power is yours!','mw');
 }
 
@@ -2229,7 +2243,6 @@ setInterval(()=>{
        ![E.DEER,E.RAB,E.FOX].includes(o.tp))) return;
 
     e.x=nx; e.y=ny;
-    reveal(nx,ny,1);
     needDraw=true;
 
     // If roaming bok steps onto the player — trigger combat!
