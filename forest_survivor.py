@@ -231,7 +231,8 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
     <p>Arrow Keys / WASD · <span style="color:#f0c040">I</span>=Inventory
        <span style="color:#f0c040">F</span>=Forage
        <span style="color:#f0c040">R</span>=Rest
-       <span style="color:#f0c040">Space</span>=Look<br>
+       <span style="color:#f0c040">Space</span>=Look
+       <span style="color:#f0c040">`</span>=Cheats<br>
        🪓 Stone Axe (Wood+Stone) chops trees &nbsp;·&nbsp; 🚣 Find Boats to sail water<br>
        🔱 Collect all 3 Triforce pieces for a special blessing!</p>
   </div>
@@ -366,13 +367,32 @@ const ACT_PER_HOUR=4;
 const DAY_START=6, DAY_END=20;
 const MM_S=2; // minimap pixels per tile
 
-const T={GR:0,TR:1,DT:2,WA:3,ST:4,SA:5};
+const T={GR:0,TR:1,DT:2,WA:3,ST:4,SA:5,TH:6};
 const E={CHEST:'chest',KEY:'key',OUTPOST:'outpost',CAMP:'camp',TRI:'triforce',
          BOAT:'boat',BOK:'bokoblin',KEE:'keese',SKU:'skulltula',LIZ:'lizalfos',
          DEER:'deer',RAB:'rabbit',FOX:'fox',
          GLEEOK:'gleeok',DARKLYNEL:'darklynel'};
 
 const DIFF_MULT={easy:[0.55,0.55,0.6,1.0], normal:[0.80,0.75,1.0,1.5], hard:[1.15,1.10,1.4,2.0]};
+
+// ── Konami code ↑↑↓↓←→←→  (or press ` backtick for direct access) ──
+let _konamiSeq=[];
+const KONAMI=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight'];
+function _pushKonami(key){
+  _konamiSeq.push(key);
+  if(_konamiSeq.length>KONAMI.length) _konamiSeq.shift();
+  // Find longest KONAMI prefix that matches the tail of _konamiSeq
+  let kMatch=0;
+  const sl=_konamiSeq.length;
+  for(let len=Math.min(sl,KONAMI.length);len>=1;len--){
+    if(_konamiSeq.slice(sl-len).every((k,i)=>k===KONAMI[i])){ kMatch=len; break; }
+  }
+  // Show subtle progress dots in the top bar once 3+ keys are in
+  const bd=document.getElementById('blessingDisp');
+  if(bd&&kMatch>=3&&kMatch<KONAMI.length&&G&&!G.bloodMoon&&!G.monsterFrenzy)
+    bd.textContent='🔑'.repeat(kMatch);
+  if(G&&_konamiSeq.join(',')===KONAMI.join(',')){ _konamiSeq=[]; openCheatMenu(); }
+}
 
 const BOSSES={
   gleeok:{
@@ -403,6 +423,7 @@ const ITEMS={
   'Wooden Sword':    {ic:'⚔️', tp:'weapon', atk:1,  desc:'A simple carved sword.'},
   'Iron Sword':      {ic:'⚔️', tp:'weapon', atk:2,  desc:'A sturdy iron blade.'},
   'Master Sword':    {ic:'⚔️', tp:'weapon', atk:5,  desc:"The sacred blade of evil's bane!"},
+  "Biggoron's Sword":{ic:'🗡️', tp:'weapon', atk:7,  desc:"A colossal blade forged by Biggoron. Unstoppable!"},
   'Deku Stick':      {ic:'🪵', tp:'weapon', atk:1,  desc:'A dried Deku stick.'},
   'Stone Axe':       {ic:'🪓', tp:'axe',    atk:2,  desc:'Chop trees AND fight! Equip to cut through forest.'},
   'Hylian Shield':   {ic:'🛡️', tp:'armor',  def:3,  desc:'The legendary Hylian Shield!'},
@@ -507,6 +528,7 @@ function newGame(name,totalNights,diff){
     triforceBlessing:0,
     opOpen:[false,false,false,false,false],
     combat:null, combatRound:0, done:false, _pendingXP:0,
+    cheats:{active:false, nayru:false, din:false},
     // Events & bosses
     bloodMoon:false, bloodMoonNights:[],
     monsterFrenzy:false, stormActive:false,
@@ -540,6 +562,8 @@ function loadScores(){
 
 function saveScore(){
   const sc=calcScore();
+  // Cheated runs are shown their score but never saved to the leaderboard
+  if(G.cheats&&G.cheats.active) return sc;
   const scores=loadScores();
   scores.push({
     name:G.pl.name, score:sc, nights:G.time.night,
@@ -598,6 +622,21 @@ function genMap(){
     if(tiles[y][x]===T.GR&&r()<.04) tiles[y][x]=T.ST;
   }
 
+  // Thorny thicket clusters — scattered across the map, forcing detours
+  const THICKET_CLUSTERS=13;
+  for(let c=0;c<THICKET_CLUSTERS;c++){
+    const tcx=5+Math.floor(r()*(MW-10));
+    const tcy=5+Math.floor(r()*(MH-10));
+    if(Math.abs(tcx-40)<9&&Math.abs(tcy-40)<9) continue; // keep center open
+    const sz=4+Math.floor(r()*6); // cluster of 4–9 tiles
+    for(let i=0;i<sz;i++){
+      const tx=tcx+Math.floor(r()*7)-3;
+      const ty=tcy+Math.floor(r()*7)-3;
+      if(tx<2||tx>=MW-2||ty<2||ty>=MH-2) continue;
+      if(tiles[ty][tx]===T.GR||tiles[ty][tx]===T.SA) tiles[ty][tx]=T.TH;
+    }
+  }
+
   const cx=40,cy=40;
   clearZone(tiles,cx,cy,4);
   const reach=bfs(tiles,cx,cy);
@@ -652,6 +691,17 @@ function genMap(){
     boats++;
   }
 
+  // Roaming bokoblin patrols — 4 persistent wanderers placed well away from camp
+  const mb=MON[E.BOK];
+  for(let i=0;i<4;i++){
+    const [rbx,rby]=openReach(tiles,ents,r,reach2);
+    if(Math.abs(rbx-cx)<10&&Math.abs(rby-cy)<10) continue; // skip if spawned near camp
+    ents.push({
+      tp:E.BOK,x:rbx,y:rby,id:`roam_${i}`,name:mb.name,roaming:true,
+      hp:mb.hp+2,maxHp:mb.hp+2,atk:mb.atk,def:mb.def,drops:mb.drops,
+    });
+  }
+
   return {tiles,ents,cx,cy};
 }
 
@@ -664,7 +714,7 @@ function bfs(tiles,sx,sy){
       const nx=x+dx,ny=y+dy;
       if(nx<0||nx>=MW||ny<0||ny>=MH||vis[ny][nx]) continue;
       const t=tiles[ny][nx];
-      if(t===T.WA||t===T.TR||t===T.DT) continue;
+      if(t===T.WA||t===T.TR||t===T.DT||t===T.TH) continue;
       vis[ny][nx]=true; q.push([nx,ny]);
     }
   }
@@ -714,8 +764,8 @@ function openReach(tiles,ents,r,reach){
 let cvs,ctx,camX=0,camY=0;
 
 const TCOL={[T.GR]:'#274f18',[T.TR]:'#1a4509',[T.DT]:'#0e2a05',
-            [T.WA]:'#19366a',[T.ST]:'#444',[T.SA]:'#7a6a3a'};
-const TEM={[T.TR]:'🌲',[T.DT]:'🌳',[T.ST]:'🪨'};
+            [T.WA]:'#19366a',[T.ST]:'#444',[T.SA]:'#7a6a3a',[T.TH]:'#1a3306'};
+const TEM={[T.TR]:'🌲',[T.DT]:'🌳',[T.ST]:'🪨',[T.TH]:'🌿'};
 const EEM={[E.CHEST]:'📦',[E.KEY]:'🗝️',[E.OUTPOST]:'🏰',[E.CAMP]:'⛺',
            [E.TRI]:'🔱',[E.BOAT]:'🚣',[E.BOK]:'👺',[E.KEE]:'🦇',
            [E.SKU]:'🕷️',[E.LIZ]:'🦎',[E.DEER]:'🦌',[E.RAB]:'🐇',[E.FOX]:'🦊',
@@ -794,7 +844,7 @@ function drawMinimap(){
   const d=img.data;
   const TC={
     [T.GR]:[39,79,24],[T.TR]:[26,69,9],[T.DT]:[14,42,5],
-    [T.WA]:[25,54,106],[T.ST]:[85,85,85],[T.SA]:[122,106,58],
+    [T.WA]:[25,54,106],[T.ST]:[85,85,85],[T.SA]:[122,106,58],[T.TH]:[26,51,6],
   };
   for(let ty=0;ty<MH;ty++) for(let tx=0;tx<MW;tx++){
     const c=G.fog[ty][tx]?[4,8,4]:(TC[G.map[ty][tx]]||TC[T.GR]);
@@ -964,6 +1014,7 @@ function tick(n=1){
         G.bloodMoon=false; G.monsterFrenzy=false; G.stormActive=false;
         msg(`☀️ Dawn breaks! Day ${G.time.night+1} begins. Safe for now.`,'ms');
         purgeMonsters();
+        if(Math.random()<0.28) shiftRivers();
       }
     }
   }
@@ -982,6 +1033,10 @@ function move(dx,dy){
   if(nx<0||nx>=MW||ny<0||ny>=MH) return;
   const t=G.map[ny][nx];
 
+  if(t===T.TH){
+    msg('🌿 Dense thorny thickets block the way! Find another path.','mw');
+    draw(); return;
+  }
   if(t===T.TR||t===T.DT){
     if(G.pl.hasAxe){
       G.map[ny][nx]=T.GR;
@@ -1396,7 +1451,9 @@ function cAttack(){
   const bonus=G.triforceBlessing>0?3:0;
   const pr=d6()+G.pl.atk+bonus, pd=Math.max(0,pr-e.def);
   e.hp-=pd;
-  let m=`You roll 🎲${pr-G.pl.atk-bonus}+${G.pl.atk+bonus}→${pd} dmg to ${e.name}!`;
+  // DIN'S FIRE: instant kill on non-bosses
+  if(G.cheats.din&&!e.isBoss) e.hp=0;
+  let m=`You roll 🎲${pr-G.pl.atk-bonus}+${G.pl.atk+bonus}→${pd} dmg to ${e.name}!${G.cheats.din&&!e.isBoss?' 🔥 Din\'s Fire!':''}`;
   if(e.hp<=0){winCombat(e,m);return;}
 
   // Determine enemy counter-attack (boss special or normal)
@@ -1422,17 +1479,20 @@ function cAttack(){
     m+=` | ${e.name} hits for ${ed}!`;
   }
 
-  G.pl.hp-=ed;
-  msg(m,'md');
+  const finalEd=G.cheats.nayru?0:ed;
+  G.pl.hp-=finalEd;
+  msg(m+(G.cheats.nayru?' 🛡️ Nayru protects you!':''),'md');
   if(G.pl.hp<=0){loseCombat();return;}
   showCombat();
 }
 
 function cDefend(){
   const e=G.combat;
-  const er=d6()+e.atk, ed=Math.max(0,er-G.pl.def-3);
+  const er=d6()+e.atk;
+  let ed=Math.max(0,er-G.pl.def-3);
+  if(G.cheats.nayru) ed=0;
   G.pl.hp-=ed;
-  msg(`You brace! ${e.name} hits for ${ed} dmg (partially blocked).`,'mi');
+  msg(`You brace! ${e.name} hits for ${ed} dmg (partially blocked).${G.cheats.nayru?' 🛡️ Nayru protects you!':''}`,'mi');
   if(G.pl.hp<=0){loseCombat();return;}
   showCombat();
 }
@@ -1441,9 +1501,10 @@ function cHeal(){
   const pi=G.pl.inv.findIndex(n=>(ITEMS[n]||{}).heal>0);
   if(pi<0){msg('No healing items!','mw');showCombat();return;}
   useConsumable(pi);
-  const e=G.combat, er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
+  const e=G.combat, er=d6()+e.atk;
+  const ed=G.cheats.nayru?0:Math.max(0,er-G.pl.def);
   G.pl.hp=Math.max(0,G.pl.hp-ed);
-  msg(`You healed! But ${e.name} attacks for ${ed}!`,'mw');
+  msg(`You healed! But ${e.name} attacks for ${ed}!${G.cheats.nayru?' 🛡️ Nayru protects you!':''}`,'mw');
   if(G.pl.hp<=0){loseCombat();return;}
   showCombat();
 }
@@ -1453,8 +1514,11 @@ function cFlee(){
   if(Math.random()<0.45+Math.floor(G.time.night/5)*0.04){
     G.pl.x=Math.max(1,Math.min(MW-2,G.pl.x+(Math.random()<.5?-3:3)));
     G.pl.y=Math.max(1,Math.min(MH-2,G.pl.y+(Math.random()<.5?-3:3)));
+    // Bosses regenerate to full HP if you flee — no free chip damage!
+    const fled=G.combat;
+    if(fled&&fled.isBoss){ fled.hp=fled.maxHp; }
     G.screen='play'; G.combat=null; closeO();
-    msg(`You fled from the ${ename}!`,'mw');
+    msg(`You fled from the ${ename}!${fled&&fled.isBoss?' The boss recovers to full HP!':''}`,'mw');
   } else {
     const e=G.combat, er=d6()+e.atk, ed=Math.max(0,er-G.pl.def);
     G.pl.hp=Math.max(0,G.pl.hp-ed);
@@ -1535,7 +1599,7 @@ function trySpawn(){
   let ex=Math.round(G.pl.x+Math.cos(ang)*dist);
   let ey=Math.round(G.pl.y+Math.sin(ang)*dist);
   ex=Math.max(1,Math.min(MW-2,ex)); ey=Math.max(1,Math.min(MH-2,ey));
-  if(G.map[ey][ex]===T.WA||G.map[ey][ex]===T.TR||G.map[ey][ex]===T.DT) return;
+  if(G.map[ey][ex]===T.WA||G.map[ey][ex]===T.TR||G.map[ey][ex]===T.DT||G.map[ey][ex]===T.TH) return;
   G.ents.push({tp,x:ex,y:ey,id:`m_${Date.now()}_${Math.random()}`,name:mb.name,
     hp:Math.max(1,Math.ceil(mb.hp*scale)),maxHp:Math.max(1,Math.ceil(mb.hp*scale)),
     atk:Math.max(1,Math.ceil(mb.atk*atkS)),def:Math.ceil(mb.def*scale),drops:mb.drops});
@@ -1545,12 +1609,63 @@ function trySpawn(){
 
 function purgeMonsters(){
   G.ents=G.ents.filter(e=>{
-    // Regular monsters disappear at dawn/camp unless very close
+    // Roaming bokoblins and bosses persist through dawn
+    if(e.roaming||e.isBoss) return true;
+    // Regular monsters disappear at dawn unless very close to player
     if([E.BOK,E.KEE,E.SKU,E.LIZ].includes(e.tp))
       return Math.abs(e.x-G.pl.x)+Math.abs(e.y-G.pl.y)<3;
-    // Bosses persist on the map until defeated
     return true;
   });
+}
+
+function shiftRivers(){
+  const SAFE_DIST=7; // stay clear of camp center (40,40)
+  const entTiles=new Set(G.ents.filter(e=>!e.dead&&!e.gone).map(e=>`${e.x},${e.y}`));
+  const DIRS=[[0,1],[0,-1],[1,0],[-1,0]];
+
+  // Tiles where water could recede (water adjacent to walkable land)
+  const recede=[];
+  // Tiles where water could advance (walkable land adjacent to water, not near camp/outpost)
+  const advance=[];
+
+  for(let ty=2;ty<MH-2;ty++) for(let tx=2;tx<MW-2;tx++){
+    if(Math.abs(tx-40)<SAFE_DIST&&Math.abs(ty-40)<SAFE_DIST) continue; // protect camp area
+    if(entTiles.has(`${tx},${ty}`)) continue; // never shift under an entity
+    if(tx===G.pl.x&&ty===G.pl.y) continue;   // never shift under player
+
+    const t=G.map[ty][tx];
+    const hasAdj=(testT)=>DIRS.some(([dx,dy])=>{
+      const nx=tx+dx,ny=ty+dy;
+      return nx>=0&&nx<MW&&ny>=0&&ny<MH&&G.map[ny][nx]===testT;
+    });
+
+    if(t===T.WA&&hasAdj(T.GR)) recede.push([tx,ty]);
+    if((t===T.GR||t===T.SA)&&hasAdj(T.WA)) advance.push([tx,ty]);
+  }
+
+  // Shuffle and pick 2–4 of each
+  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+  const n=2+Math.floor(Math.random()*3);
+  let shifted=false;
+
+  shuffle(recede).slice(0,n).forEach(([tx,ty])=>{G.map[ty][tx]=T.SA; shifted=true;});
+  shuffle(advance).slice(0,n).forEach(([tx,ty])=>{G.map[ty][tx]=T.WA; shifted=true;});
+
+  if(shifted){
+    // If the player is now standing in water without a boat, nudge them to adjacent land
+    if(G.map[G.pl.y][G.pl.x]===T.WA&&!G.pl.hasBoat){
+      for(const [dx,dy] of DIRS){
+        const nx=G.pl.x+dx,ny=G.pl.y+dy;
+        if(nx>=0&&nx<MW&&ny>=0&&ny<MH){
+          const nt=G.map[ny][nx];
+          if(nt!==T.WA&&nt!==T.TR&&nt!==T.DT&&nt!==T.TH){G.pl.x=nx;G.pl.y=ny;break;}
+        }
+      }
+      msg('🌊 The river shifted and swept you to shore!','md');
+    } else {
+      msg('🌊 Overnight the river has shifted — find new paths!','mw');
+    }
+  }
 }
 
 // ╔══════════════════════════════════════════════════════════╗
@@ -1779,6 +1894,56 @@ function triggerVictory(){
 // ╔══════════════════════════════════════════════════════════╗
 // ║                   OVERLAY                               ║
 // ╚══════════════════════════════════════════════════════════╝
+// ╔══════════════════════════════════════════════════════════╗
+// ║              CHEAT CODES  (↑↑↓↓←→←→)                   ║
+// ╚══════════════════════════════════════════════════════════╝
+function openCheatMenu(){
+  if(!G||G.done) return;
+  const c=G.cheats;
+  showO('★ CHEAT CODES ★',
+    `<p style="color:#f0c040;font-size:9px">The goddesses hear your prayer...</p>
+     <p style="color:#ff6060;font-size:6px">⚠️ Activating any cheat disables the leaderboard for this run</p>
+     ${c.active?'<p style="color:#ff8040;font-size:6px">⚡ Cheats active — score will not be saved</p>':''}`,
+    [{t:`${c.nayru?'✅ ':''}NAYRU — Invincibility`,     f:"cheatNayru()",   cls:c.nayru?'btn-tri':''},
+     {t:`${c.din  ?'✅ ':''}DIN — One-Hit Monsters`,    f:"cheatDin()",     cls:c.din  ?'btn-tri':''},
+     {t:'RUPEES — Wallet +999',                         f:"cheatRupees()",  cls:'btn-gold'},
+     {t:'TRIFORCE — Complete Quest',                    f:"cheatTriforce()",cls:'btn-gold'},
+     {t:"BIGGORON — Legendary Sword",                   f:"cheatBiggoron()",cls:'btn-red'},
+     {t:'Close',                                        f:"closeO()"}]);
+}
+function cheatNayru(){
+  G.cheats.active=true; G.cheats.nayru=!G.cheats.nayru;
+  msg(G.cheats.nayru?"🛡️ NAYRU'S LOVE active — you take no damage!":"🛡️ Nayru's protection lifted.",'mw');
+  openCheatMenu();
+}
+function cheatDin(){
+  G.cheats.active=true; G.cheats.din=!G.cheats.din;
+  msg(G.cheats.din?"🔥 DIN'S FIRE active — monsters fall in one hit!":"🔥 Din's fire extinguished.",'mw');
+  openCheatMenu();
+}
+function cheatRupees(){
+  G.cheats.active=true; G.pl.rupees+=999;
+  msg(`💎 999 rupees granted! Total: ${G.pl.rupees}`,'mw');
+  openCheatMenu();
+}
+function cheatTriforce(){
+  G.cheats.active=true;
+  if(G.triforce.every(t=>t)){ msg('🔱 Triforce already complete!','mw'); openCheatMenu(); return; }
+  G.triforce=[true,true,true];
+  G.ents=G.ents.filter(e=>e.tp!==E.TRI);
+  closeO();
+  triforceComplete(); // shows its own overlay
+}
+function cheatBiggoron(){
+  G.cheats.active=true;
+  const sword="Biggoron's Sword";
+  if(!G.pl.inv.includes(sword)) G.pl.inv.push(sword);
+  G.pl.eq.w=sword;
+  msg("🗡️ BIGGORON'S SWORD equipped! Overwhelming ATK +7!",'mw');
+  updateHUD();
+  openCheatMenu();
+}
+
 function showO(title,content,btns){
   document.getElementById('oTitle').textContent=title;
   document.getElementById('oContent').innerHTML=content;
@@ -1806,6 +1971,8 @@ document.addEventListener('keydown',e=>{
   // Never intercept keys while the user is typing in any text input
   const active=document.activeElement;
   if(active&&(active.tagName==='INPUT'||active.tagName==='TEXTAREA')) return;
+  // Konami code — track arrow keys whenever the game is loaded
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)&&G) _pushKonami(e.key);
   if(!G||!G.screen||G.screen==='combat') return;
   const ovOpen=document.getElementById('overlay').classList.contains('on');
   if(ovOpen){if(e.key==='Escape') closeO(); return;}
@@ -1818,12 +1985,63 @@ document.addEventListener('keydown',e=>{
     case 'f':case 'F': doForage(); break;
     case 'r':case 'R': doRest(); break;
     case ' ': e.preventDefault();doLook(); break;
+    case '`': openCheatMenu(); break; // backtick = direct cheat menu
   }
 });
 
 // ╔══════════════════════════════════════════════════════════╗
-// ║          ANIMAL SPAWNING (daytime ambience)             ║
+// ║     ROAMING ENEMIES & ANIMAL SPAWNING                   ║
 // ╚══════════════════════════════════════════════════════════╝
+// ── Roaming bokoblin AI ──────────────────────────────────────
+setInterval(()=>{
+  if(!G||!G.screen||G.screen!=='play'||G.done) return;
+  const isNight=G.time.isNight;
+  const DETECT=isNight?9:4; // larger detection range at night
+  const MOVE_CHANCE=isNight?0.75:0.25;
+  let needDraw=false;
+
+  G.ents.forEach(e=>{
+    if(!e.roaming||e.dead||e.gone) return;
+    if(Math.random()>MOVE_CHANCE) return;
+
+    const dx_=G.pl.x-e.x, dy_=G.pl.y-e.y;
+    const dist=Math.abs(dx_)+Math.abs(dy_);
+    let mx=0,my=0;
+
+    if(dist<=DETECT){
+      // Chase player — move along the dominant axis toward them
+      if(Math.abs(dx_)>=Math.abs(dy_)) mx=dx_>0?1:-1;
+      else my=dy_>0?1:-1;
+    } else {
+      // Random wander
+      const dirs=[[0,1],[0,-1],[1,0],[-1,0]];
+      const [rdx,rdy]=dirs[Math.floor(Math.random()*dirs.length)];
+      mx=rdx; my=rdy;
+    }
+
+    const nx=e.x+mx, ny=e.y+my;
+    if(nx<1||nx>=MW-1||ny<1||ny>=MH-1) return;
+    const t=G.map[ny][nx];
+    if(t===T.WA||t===T.TR||t===T.DT||t===T.TH) return;
+    // Don't stack onto another entity
+    if(G.ents.some(o=>!o.dead&&!o.gone&&o!==e&&o.x===nx&&o.y===ny&&
+       ![E.DEER,E.RAB,E.FOX].includes(o.tp))) return;
+
+    e.x=nx; e.y=ny;
+    reveal(nx,ny,1);
+    needDraw=true;
+
+    // If roaming bok steps onto the player — trigger combat!
+    if(nx===G.pl.x&&ny===G.pl.y&&G.screen==='play'){
+      msg(`👺 A Bokoblin patrol ambushes you!`,'md');
+      G.combat=e; G.combatRound=0; G.screen='combat'; showCombat();
+    }
+  });
+
+  if(needDraw&&G.screen==='play') draw();
+},2000);
+
+// ── Animal spawning (daytime ambience) ───────────────────────
 setInterval(()=>{
   if(!G||!G.screen||G.screen!=='play'||G.time.isNight||G.done) return;
   if(Math.random()>.35) return;
@@ -1833,7 +2051,7 @@ setInterval(()=>{
   let ex=Math.round(G.pl.x+Math.cos(ang)*dist);
   let ey=Math.round(G.pl.y+Math.sin(ang)*dist);
   ex=Math.max(1,Math.min(MW-2,ex)); ey=Math.max(1,Math.min(MH-2,ey));
-  if(G.map[ey][ex]===T.WA||G.map[ey][ex]===T.TR||G.map[ey][ex]===T.DT) return;
+  if(G.map[ey][ex]===T.WA||G.map[ey][ex]===T.TR||G.map[ey][ex]===T.DT||G.map[ey][ex]===T.TH) return;
   G.ents=G.ents.filter(e=>![E.DEER,E.RAB,E.FOX].includes(e.tp));
   G.ents.push({tp,x:ex,y:ey,id:`an_${Date.now()}`});
   reveal(ex,ey,2); draw();
@@ -1868,11 +2086,12 @@ function startGame(){
     move(dx,dy);
   }
   const dpMap={dpUp:[0,-1],dpDown:[0,1],dpLeft:[-1,0],dpRight:[1,0]};
+  const dpKonami={dpUp:'ArrowUp',dpDown:'ArrowDown',dpLeft:'ArrowLeft',dpRight:'ArrowRight'};
   Object.entries(dpMap).forEach(([id,[dx,dy]])=>{
     const btn=document.getElementById(id);
     if(!btn) return;
     // touchstart fires before the 300 ms click delay — use it for responsive feel
-    btn.addEventListener('touchstart',e=>{e.preventDefault();dpMove(dx,dy);},{passive:false});
+    btn.addEventListener('touchstart',e=>{e.preventDefault();dpMove(dx,dy);_pushKonami(dpKonami[id]);},{passive:false});
     btn.addEventListener('click',()=>dpMove(dx,dy));
   });
 
