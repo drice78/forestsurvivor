@@ -23,7 +23,7 @@ GAME_HTML = r"""
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Forest Survivor: Zelda Edition</title>
+<title>Dungeon Master: A Zelda Saga</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -47,11 +47,6 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 
 .sliderRow { display:flex; align-items:center; gap:10px; }
 .sliderRow label { font-size:6px; color:#f0c040; }
-#nightSlider { -webkit-appearance:none; width:130px; height:6px; border-radius:3px;
-  background:#1a4a1a; outline:none; cursor:pointer; }
-#nightSlider::-webkit-slider-thumb { -webkit-appearance:none; width:15px; height:15px;
-  border-radius:50%; background:#f0c040; cursor:pointer; border:2px solid #0a1a0a; }
-#nightsVal { font-size:10px; color:#f0c040; min-width:28px; text-align:center; }
 .diffRow { display:flex; gap:5px; }
 .diffBtn { font-family:inherit; font-size:6px; padding:4px 9px;
   border:2px solid #2d5a1b; background:#0d280d; color:#90d878;
@@ -77,9 +72,10 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 #topTitle  { font-size:9px; color:#f0c040; }
 #timeDisp  { font-size:8px; color:#e0d0a0; }
 #blessingDisp { font-size:7px; color:#f0c040; }
-#nightCtr  { font-size:8px; color:#c0d8ff; margin-left:auto; }
+#floorDisp { font-size:8px; color:#d0a0ff; margin-left:auto; }
 #scoreDisp { font-size:7px; color:#a0f0a0; }
 #rupeeDisp { font-size:8px; color:#00e8ff; }
+#floorDisp { font-size:8px; color:#d0a0ff; }
 #mobileStats { display:none; align-items:center; gap:8px; font-size:7px; margin-left:auto; }
 
 #mainRow { display:flex; flex:1; overflow:hidden; }
@@ -202,19 +198,12 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 <!-- ══════════ NAME / SETTINGS SCREEN ══════════ -->
 <div id="nameScreen">
   <div id="nameLeft">
-    <h1>🌲 FOREST SURVIVOR 🌲</h1>
-    <h2>— A Zelda-Themed Tale —</h2>
-    <p>Stranded in the cursed Hyrulean forest, survive until rescue arrives.<br>
-       Brave the monsters, unlock outposts, find the Triforce!</p>
+    <h1>⚔️ DUNGEON MASTER ⚔️</h1>
+    <h2>— A Zelda Saga —</h2>
+    <p>Drawn into a cursed dungeon of five floors, you must fight your way to the deepest abyss.<br>
+       Defeat each floor's guardian to descend. Survive the darkness. Become the Dungeon Master.</p>
 
     <input id="nameInput" type="text" placeholder="Enter hero name..." maxlength="12" />
-
-    <div class="sliderRow">
-      <label>Survival Nights:</label>
-      <input id="nightSlider" type="range" min="10" max="200" value="100"
-        oninput="document.getElementById('nightsVal').textContent=this.value" />
-      <span id="nightsVal">100</span>
-    </div>
 
     <div class="sliderRow">
       <label>Difficulty:</label>
@@ -228,11 +217,11 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
     <button class="btn btn-gold" onclick="startGame()"
       style="width:210px;font-size:9px;padding:9px;">⚔️ BEGIN ADVENTURE</button>
 
-    <p>Arrow Keys / WASD · <span style="color:#f0c040">I</span>=Inventory
+    <p><span style="color:#f0c040">Goal</span>: Defeat the floor boss to descend · 5 floors total<br>
+       Arrow Keys / WASD · <span style="color:#f0c040">I</span>=Inventory
        <span style="color:#f0c040">F</span>=Forage
        <span style="color:#f0c040">R</span>=Rest
-       <span style="color:#f0c040">Space</span>=Look
-       <span style="color:#f0c040">`</span>=Cheats<br>
+       <span style="color:#f0c040">Space</span>=Look<br>
        🪓 Stone Axe (Wood+Stone) chops trees &nbsp;·&nbsp; 🚣 Find Boats to sail water<br>
        🔱 Collect all 3 Triforce pieces for a special blessing!</p>
   </div>
@@ -242,7 +231,7 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
     <h3>🏆 HIGH SCORES</h3>
     <div id="lbList"><div id="lbEmpty">No scores yet.<br>Be the first survivor!</div></div>
     <div class="lbLegend">
-      Score = Nights×50 + Rupees<br>
+      Score = Floor × 500 + Rupees<br>
       + Triforce × 300<br>
       + Outposts × 150<br>
       + Levels × 100<br>
@@ -254,17 +243,17 @@ html,body { width:100%; height:100%; background:#050e05; color:#c8d8c8;
 <!-- ══════════ MAIN APP ══════════ -->
 <div id="app">
   <div id="topBar">
-    <div id="topTitle">🌲 Forest Survivor</div>
+    <div id="topTitle">⚔️ Dungeon Master</div>
     <div id="timeDisp">☀️ Day 1 · Morning</div>
     <div id="blessingDisp"></div>
-    <div id="nightCtr">Night: 0 / 100</div>
+    <div id="floorDisp">Floor: 1 / 5</div>
     <div id="scoreDisp">⭐ 0</div>
     <div id="rupeeDisp">💎 0</div>
     <span id="mobileStats">
       <span id="msHp">❤️ 12</span>
       <span id="msLv">Lv1</span>
       <span id="msRup">💎 0</span>
-      <span id="msNight">🌙 0/100</span>
+      <span id="msNight">⚔️ Fl.1/5</span>
     </span>
   </div>
 
@@ -371,7 +360,9 @@ const T={GR:0,TR:1,DT:2,WA:3,ST:4,SA:5,TH:6};
 const E={CHEST:'chest',KEY:'key',OUTPOST:'outpost',CAMP:'camp',TRI:'triforce',
          BOAT:'boat',BOK:'bokoblin',KEE:'keese',SKU:'skulltula',LIZ:'lizalfos',
          DEER:'deer',RAB:'rabbit',FOX:'fox',
-         GLEEOK:'gleeok',DARKLYNEL:'darklynel'};
+         GLEEOK:'gleeok',DARKLYNEL:'darklynel',
+         CHUCHU:'chuchu',WIZZROBE:'wizzrobe',DARKKNIGHT:'darkknight',PHANTOM:'phantom',
+         DESCENT:'descent'};
 
 const DIFF_MULT={easy:[0.55,0.55,0.6,1.0], normal:[0.80,0.75,1.0,1.5], hard:[1.15,1.10,1.4,2.0]};
 
@@ -407,6 +398,36 @@ const BOSSES={
     special:{name:'Berserker Spin', every:4, type:'spin', hits:2,
              warn:'🌀 Dark Lynel winds up — BERSERKER SPIN incoming!'},
   },
+  forestwarden:{
+    name:'Forest Warden', ic:'🌲', hp:28, atk:3, def:1, xp:180, rMin:40, rMax:70,
+    drops:['Master Sword','Blue Potion','Red Potion','Hylian Shield'],
+    special:{name:'Root Snare', every:3, type:'snare', dmg:3,
+             warn:'🌿 Forest Warden summons roots — ROOT SNARE incoming!'},
+  },
+  stonegolem:{
+    name:'Stone Golem', ic:'🗿', hp:45, atk:4, def:4, xp:220, rMin:50, rMax:90,
+    drops:['Master Sword','Hylian Shield','Blue Potion','Stone Axe'],
+    special:{name:'Tremor', every:3, type:'tremor', dmg:4,
+             warn:'🪨 The Golem stomps — TREMOR incoming!'},
+  },
+  firedrake:{
+    name:'Fire Drake', ic:'🔥', hp:60, atk:6, def:2, xp:270, rMin:55, rMax:100,
+    drops:['Master Sword','Blue Potion','Hylian Shield','Fairy'],
+    special:{name:'Inferno Breath', every:3, type:'flame', dmg:8,
+             warn:'🔥 Fire Drake rears up — INFERNO BREATH incoming!'},
+  },
+  shadowknight:{
+    name:'Shadow Knight', ic:'⚔️', hp:75, atk:6, def:3, xp:320, rMin:55, rMax:110,
+    drops:['Master Sword','Blue Potion','Hylian Shield','Fairy'],
+    special:{name:'Phase Strike', every:4, type:'spin', hits:2,
+             warn:'🌑 Shadow Knight phases — PHASE STRIKE incoming!'},
+  },
+  darklord:{
+    name:'The Dark Lord', ic:'👑', hp:100, atk:8, def:4, xp:500, rMin:60, rMax:120,
+    drops:['Master Sword','Blue Potion','Hylian Shield','Fairy'],
+    special:{name:'Void Blast', every:3, type:'flame', dmg:10,
+             warn:'💀 The Dark Lord raises his hand — VOID BLAST incoming!'},
+  },
 };
 
 let diffKey='normal';
@@ -417,6 +438,64 @@ function setDiff(k){
     if(el) el.classList.toggle('sel',d===k);
   });
 }
+
+const LEVEL_CFG=[null, // 1-indexed
+  { // Floor 1: Haunted Forest
+    name:'The Haunted Forest', icon:'🌲', floorNum:1,
+    desc:'Ancient trees hide terrible monsters...',
+    monPool:[E.BOK,E.KEE,E.BOK,E.SKU],
+    bossType:'forestwarden',
+    TCOL:{[T.GR]:'#274f18',[T.TR]:'#1a4509',[T.DT]:'#0e2a05',[T.WA]:'#19366a',[T.ST]:'#444444',[T.SA]:'#7a6a3a',[T.TH]:'#1a3306'},
+    MMAP:{[T.GR]:[39,79,24],[T.TR]:[26,69,9],[T.DT]:[14,42,5],[T.WA]:[25,54,106],[T.ST]:[85,85,85],[T.SA]:[122,106,58],[T.TH]:[26,51,6]},
+    TEM:{[T.TR]:'🌲',[T.DT]:'🌳',[T.ST]:'🪨',[T.TH]:'🌿'},
+    bgColor:'#050e05', borderColor:'#2d5a1b', titleColor:'#78c858',
+    waterName:'River', nightName:'Night', dawnName:'Dawn',
+  },
+  { // Floor 2: Stone Caverns
+    name:'The Stone Caverns', icon:'🪨', floorNum:2,
+    desc:'Deep tunnels riddled with rock and shadow...',
+    monPool:[E.SKU,E.LIZ,E.CHUCHU,E.SKU],
+    bossType:'stonegolem',
+    TCOL:{[T.GR]:'#252530',[T.TR]:'#18182a',[T.DT]:'#100f1a',[T.WA]:'#6b2800',[T.ST]:'#5a5a70',[T.SA]:'#3a3848',[T.TH]:'#1a1825'},
+    MMAP:{[T.GR]:[37,37,48],[T.TR]:[24,24,42],[T.DT]:[16,15,26],[T.WA]:[107,40,0],[T.ST]:[90,90,112],[T.SA]:[58,56,72],[T.TH]:[26,24,37]},
+    TEM:{[T.TR]:'🪨',[T.DT]:'💎',[T.ST]:'🗿',[T.TH]:'🕸️'},
+    bgColor:'#0a0a14', borderColor:'#4a4a6a', titleColor:'#9090c0',
+    waterName:'Lava', nightName:'Dark Cycle', dawnName:'Torch-light',
+  },
+  { // Floor 3: Lava Forge
+    name:'The Lava Forge', icon:'🔥', floorNum:3,
+    desc:'Rivers of molten rock and ancient forges of war...',
+    monPool:[E.LIZ,E.WIZZROBE,E.LIZ,E.CHUCHU],
+    bossType:'firedrake',
+    TCOL:{[T.GR]:'#3a1a08',[T.TR]:'#200800',[T.DT]:'#200a00',[T.WA]:'#e83a00',[T.ST]:'#4a2818',[T.SA]:'#5a3020',[T.TH]:'#280800'},
+    MMAP:{[T.GR]:[58,26,8],[T.TR]:[32,8,0],[T.DT]:[32,10,0],[T.WA]:[232,58,0],[T.ST]:[74,40,24],[T.SA]:[90,48,32],[T.TH]:[40,8,0]},
+    TEM:{[T.TR]:'🌋',[T.DT]:'🔥',[T.ST]:'⛏️',[T.TH]:'🌑'},
+    bgColor:'#140500', borderColor:'#8a3010', titleColor:'#f08040',
+    waterName:'Lava', nightName:'Inferno', dawnName:'Cooling',
+  },
+  { // Floor 4: Dark Castle
+    name:'The Dark Castle', icon:'🏰', floorNum:4,
+    desc:'Shadow-cloaked battlements where dark knights patrol...',
+    monPool:[E.DARKKNIGHT,E.WIZZROBE,E.DARKKNIGHT,E.PHANTOM],
+    bossType:'shadowknight',
+    TCOL:{[T.GR]:'#1a1a2a',[T.TR]:'#0f0f20',[T.DT]:'#08080f',[T.WA]:'#0a0a50',[T.ST]:'#353545',[T.SA]:'#252535',[T.TH]:'#0d0d1a'},
+    MMAP:{[T.GR]:[26,26,42],[T.TR]:[15,15,32],[T.DT]:[8,8,15],[T.WA]:[10,10,80],[T.ST]:[53,53,69],[T.SA]:[37,37,53],[T.TH]:[13,13,26]},
+    TEM:{[T.TR]:'🗼',[T.DT]:'⚫',[T.ST]:'🔩',[T.TH]:'🌀'},
+    bgColor:'#05050f', borderColor:'#3030a0', titleColor:'#7070e0',
+    waterName:'Abyss', nightName:'Dark Watch', dawnName:'Pale Light',
+  },
+  { // Floor 5: Shadow Abyss
+    name:'The Shadow Abyss', icon:'💀', floorNum:5,
+    desc:'The final darkness. The Dark Lord awaits his challenger...',
+    monPool:[E.DARKKNIGHT,E.PHANTOM,E.WIZZROBE,E.DARKKNIGHT],
+    bossType:'darklord',
+    TCOL:{[T.GR]:'#150010',[T.TR]:'#0a0008',[T.DT]:'#050005',[T.WA]:'#300030',[T.ST]:'#3a0040',[T.SA]:'#200025',[T.TH]:'#0a0010'},
+    MMAP:{[T.GR]:[21,0,16],[T.TR]:[10,0,8],[T.DT]:[5,0,5],[T.WA]:[48,0,48],[T.ST]:[58,0,64],[T.SA]:[32,0,37],[T.TH]:[10,0,16]},
+    TEM:{[T.TR]:'💀',[T.DT]:'🌑',[T.ST]:'💠',[T.TH]:'🌀'},
+    bgColor:'#050008', borderColor:'#800080', titleColor:'#c060ff',
+    waterName:'Void', nightName:'Eternal Dark', dawnName:'Shadow Shift',
+  },
+];
 
 // ── Items ──────────────────────────────────────────────────
 const ITEMS={
@@ -479,6 +558,10 @@ const MON={
   keese:    {name:'Keese',    ic:'🦇', hp:2,  atk:1, def:0, rMin:2,  rMax:7,  xp:8,  drops:['Keese Wing']},
   skulltula:{name:'Skulltula',ic:'🕷️', hp:4,  atk:2, def:0, rMin:6,  rMax:15, xp:22, drops:['Spider Silk','Monster Fang']},
   lizalfos: {name:'Lizalfos', ic:'🦎', hp:7,  atk:2, def:1, rMin:12, rMax:22, xp:35, drops:['Monster Horn','Monster Fang']},
+  chuchu:     {name:'Rock ChuChu',  ic:'🟣', hp:6,  atk:2, def:2, rMin:8,  rMax:20, xp:28, drops:['Stone','Stone','Monster Fang']},
+  wizzrobe:   {name:'Wizzrobe',     ic:'🧙', hp:5,  atk:4, def:0, rMin:14, rMax:28, xp:40, drops:['Blue Potion','Monster Horn','Arrows (5)']},
+  darkknight: {name:'Dark Knight',  ic:'🗡️', hp:10, atk:4, def:2, rMin:18, rMax:35, xp:50, drops:['Iron Sword','Iron Shield','Monster Fang']},
+  phantom:    {name:'Phantom',      ic:'👻', hp:9,  atk:5, def:1, rMin:20, rMax:40, xp:55, drops:['Blue Potion','Monster Horn','Hylian Shield']},
 };
 
 const SHOP=[
@@ -513,7 +596,7 @@ function newGame(name,totalNights,diff){
   setNoiseSeed(Math.floor(Math.random()*999983));
   const md=genMap();
   G={
-    screen:'play', totalNights, diff,
+    screen:'play', totalNights:9999, diff,
     pl:{
       name, x:md.cx, y:md.cy,
       hp:12, maxHp:12, atk:1, def:0, rupees:10,
@@ -529,18 +612,21 @@ function newGame(name,totalNights,diff){
     opOpen:[false,false,false,false,false],
     combat:null, combatRound:0, done:false, _pendingXP:0,
     cheats:{active:false, nayru:false, din:false},
+    // Dungeon Master mode
+    dungeonLevel:1, levelBossDefeated:false, levelBossId:null,
     // Events & bosses
     bloodMoon:false, bloodMoonNights:[],
     monsterFrenzy:false, stormActive:false,
     harvestLeft:0, eventCooldown:0,
     bossSpawned:[false,false],
   };
-  // Pre-compute blood moon nights (~every 10% of total nights)
+  // Pre-compute blood moon nights (every 8 nights fixed)
   for(let p=1;p<=9;p++){
-    const bn=Math.floor(totalNights*p*0.1);
-    if(bn>=3) G.bloodMoonNights.push(bn);
+    const bn=p*8;
+    G.bloodMoonNights.push(bn);
   }
   reveal(md.cx,md.cy,4);
+  spawnFloorBoss();
 }
 
 // ╔══════════════════════════════════════════════════════════╗
@@ -548,11 +634,11 @@ function newGame(name,totalNights,diff){
 // ╚══════════════════════════════════════════════════════════╝
 function calcScore(){
   const dm=DIFF_MULT[G.diff]||DIFF_MULT.normal;
-  const base=G.time.night*50 + G.pl.rupees
-            + G.triforce.filter(t=>t).length*300
-            + G.opOpen.filter(u=>u).length*150
-            + (G.pl.level-1)*100;
-  return Math.floor(base*dm[3]);
+  const base=(G.dungeonLevel-1)*500 + G.pl.rupees
+    + G.triforce.filter(t=>t).length*300
+    + G.opOpen.filter(u=>u).length*150
+    + (G.pl.level-1)*100;
+  return Math.round(base * dm[3]);
 }
 
 function loadScores(){
@@ -566,8 +652,8 @@ function saveScore(){
   if(G.cheats&&G.cheats.active) return sc;
   const scores=loadScores();
   scores.push({
-    name:G.pl.name, score:sc, nights:G.time.night,
-    total:G.totalNights, diff:G.diff,
+    name:G.pl.name, score:sc,
+    floor:G.dungeonLevel, diff:G.diff,
     tf:G.triforce.filter(t=>t).length,
     op:G.opOpen.filter(u=>u).length,
     level:G.pl.level,
@@ -596,7 +682,7 @@ function renderLeaderboard(){
       <span>${s.score.toLocaleString()}</span>
     </div>
     <div style="font-size:5px;color:#405040;padding:0 6px 3px">
-      Night ${s.nights}/${s.total} · Lv${s.level||1} · 🔱${s.tf}/3 · 🏰${s.op}/5 · ${s.date}
+      Fl${s.floor||1} · Lv${s.level||1} · 🔱${s.tf}/3 · 🏰${s.op}/5 · ${s.date}
     </div>`;
   }).join('');
 }
@@ -769,7 +855,8 @@ const TEM={[T.TR]:'🌲',[T.DT]:'🌳',[T.ST]:'🪨',[T.TH]:'🌿'};
 const EEM={[E.CHEST]:'📦',[E.KEY]:'🗝️',[E.OUTPOST]:'🏰',[E.CAMP]:'⛺',
            [E.TRI]:'🔱',[E.BOAT]:'🚣',[E.BOK]:'👺',[E.KEE]:'🦇',
            [E.SKU]:'🕷️',[E.LIZ]:'🦎',[E.DEER]:'🦌',[E.RAB]:'🐇',[E.FOX]:'🦊',
-           [E.GLEEOK]:'🐉',[E.DARKLYNEL]:'🦁'};
+           [E.GLEEOK]:'🐉',[E.DARKLYNEL]:'🦁',
+           [E.CHUCHU]:'🟣',[E.WIZZROBE]:'🧙',[E.DARKKNIGHT]:'🗡️',[E.PHANTOM]:'👻',[E.DESCENT]:'🪜'};
 
 function moveCam(){
   camX=G.pl.x*TS-cvs.width/2+TS/2;
@@ -787,16 +874,18 @@ function draw(){
   const txE=Math.ceil((camX+W)/TS),tyE=Math.ceil((camY+H)/TS);
 
   // tiles
+  const lvlTCOL=(G&&G.dungeonLevel&&LEVEL_CFG[G.dungeonLevel])?LEVEL_CFG[G.dungeonLevel].TCOL:LEVEL_CFG[1].TCOL;
+  const lvlTEM=(G&&G.dungeonLevel&&LEVEL_CFG[G.dungeonLevel])?LEVEL_CFG[G.dungeonLevel].TEM:LEVEL_CFG[1].TEM;
   for(let ty=tyS;ty<tyE&&ty<MH;ty++) for(let tx=txS;tx<txE&&tx<MW;tx++){
     if(tx<0||ty<0) continue;
     const sx=tx*TS-camX,sy=ty*TS-camY;
     const fog=G.fog[ty][tx];
-    let col=fog?'#060e06':TCOL[G.map[ty][tx]]||'#274f18';
+    let col=fog?'#060e06':lvlTCOL[G.map[ty][tx]]||'#274f18';
     if(!fog&&G.map[ty][tx]===T.WA&&G.pl.hasBoat) col='#2a5aaa';
     ctx.fillStyle=col; ctx.fillRect(sx,sy,TS,TS);
     if(!fog){
       ctx.strokeStyle='rgba(0,0,0,.12)'; ctx.strokeRect(sx,sy,TS,TS);
-      const em=TEM[G.map[ty][tx]];
+      const em=lvlTEM[G.map[ty][tx]];
       if(em){ctx.font=`${TS-8}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
              ctx.fillText(em,sx+TS/2,sy+TS/2);}
     }
@@ -813,6 +902,8 @@ function draw(){
     else if(e.tp===E.OUTPOST) {ctx.shadowColor=G.opOpen[e.idx]?'#00ff80':'#ff3040';ctx.shadowBlur=10;}
     else if(e.tp===E.CAMP)    {ctx.shadowColor='#60ff80';ctx.shadowBlur=8;}
     else if(e.tp===E.BOAT)    {ctx.shadowColor='#60b8ff';ctx.shadowBlur=10;}
+    else if(e.isFloorBoss)    {ctx.shadowColor='#ffd700';ctx.shadowBlur=35;}
+    else if(e.tp===E.DESCENT) {ctx.shadowColor='#00ffff';ctx.shadowBlur=15;}
     else if(e.tp===E.GLEEOK)  {ctx.shadowColor='#ff5500';ctx.shadowBlur=28;}
     else if(e.tp===E.DARKLYNEL){ctx.shadowColor='#aa00ff';ctx.shadowBlur=28;}
     ctx.font=`${TS-4}px serif`;
@@ -842,7 +933,7 @@ function drawMinimap(){
   // Terrain via ImageData (fast pixel fill)
   const img=mctx.createImageData(MW*MM_S,MH*MM_S);
   const d=img.data;
-  const TC={
+  const TC=(LEVEL_CFG[G.dungeonLevel||1]||LEVEL_CFG[1]).MMAP||{
     [T.GR]:[39,79,24],[T.TR]:[26,69,9],[T.DT]:[14,42,5],
     [T.WA]:[25,54,106],[T.ST]:[85,85,85],[T.SA]:[122,106,58],[T.TH]:[26,51,6],
   };
@@ -872,6 +963,8 @@ function drawMinimap(){
     else if(e.tp===E.KEY)      dot(e.x,e.y,'#ff8800',3);
     else if(e.tp===E.TRI)      dot(e.x,e.y,'#ffff60',4);
     else if(e.tp===E.BOAT)     dot(e.x,e.y,'#60b8ff',3);
+    else if(e.isFloorBoss)     dot(e.x,e.y,'#ffd700',7);
+    else if(e.tp===E.DESCENT)  dot(e.x,e.y,'#00ffff',6);
     else if(e.tp===E.GLEEOK)   dot(e.x,e.y,'#ff5500',6);
     else if(e.tp===E.DARKLYNEL)dot(e.x,e.y,'#cc00ff',6);
   });
@@ -899,8 +992,11 @@ function updateHUD(){
                'Afternoon','Late Afternoon','Evening','Evening','Dusk','Dusk',
                'Nightfall','Night','Night','Night'];
   const icon=G.time.isNight?'🌙':(h<7||h>18?'🌅':'☀️');
-  document.getElementById('timeDisp').textContent=`${icon} Day ${G.time.night+1} · ${names[h]||''}`;
-  document.getElementById('nightCtr').textContent=`Night: ${G.time.night} / ${G.totalNights}`;
+  const lvlCfgNow=LEVEL_CFG[G.dungeonLevel||1]||LEVEL_CFG[1];
+  const nightWord=G.time.isNight?lvlCfgNow.nightName:lvlCfgNow.dawnName;
+  document.getElementById('timeDisp').textContent=`${icon} Day ${G.time.night+1} · ${nightWord}`;
+  const floorEl=document.getElementById('floorDisp');
+  if(floorEl) floorEl.textContent=`Floor: ${G.dungeonLevel||1} / 5${G.levelBossDefeated?' ✅':''}`;
   document.getElementById('rupeeDisp').textContent=`💎 ${G.pl.rupees}`;
   document.getElementById('scoreDisp').textContent=`⭐ ${calcScore().toLocaleString()}`;
 
@@ -990,7 +1086,7 @@ function updateHUD(){
   if(msHp)    msHp.textContent=`❤️ ${G.pl.hp}/${G.pl.maxHp}`;
   if(msLv)    msLv.textContent=`Lv${G.pl.level}`;
   if(msRup)   msRup.textContent=`💎 ${G.pl.rupees}`;
-  if(msNight) msNight.textContent=`🌙 ${G.time.night}/${G.totalNights}`;
+  if(msNight) msNight.textContent=`⚔️ Fl.${G.dungeonLevel||1}/5`;
 }
 
 // ╔══════════════════════════════════════════════════════════╗
@@ -1101,11 +1197,20 @@ function onStep(e){
       if(!e.opened){e.opened=true;showChest(e.loot);} break;
     case E.OUTPOST: showOutpost(e); break;
     case E.BOK: case E.KEE: case E.SKU: case E.LIZ:
+      case E.CHUCHU: case E.WIZZROBE: case E.DARKKNIGHT: case E.PHANTOM:
       if(!e.dead) startCombat(e); break;
     case E.GLEEOK: case E.DARKLYNEL:
       if(!e.dead) startCombat(e); break;
     case E.DEER: case E.RAB: case E.FOX:
       msg(`A ${e.tp} scampers into the undergrowth!`,'mi'); e.gone=true; break;
+    case E.DESCENT:
+      if(G.levelBossDefeated){
+        if(G.dungeonLevel>=5){ triggerDungeonMaster(); }
+        else { descendLevel(); }
+      } else {
+        msg('🚪 The passage is sealed. Defeat the floor guardian first!','mw');
+      }
+      break;
   }
 }
 
@@ -1543,6 +1648,17 @@ function winCombat(e,lastMsg){
   G._pendingXP=(G._pendingXP||0)+xpGain;
   msg(`${lastMsg} → VICTORY! +💎${rp}${gotDrop?` + ${drop}`:''}${xpGain?` +${xpGain}XP`:''}!`,'ms');
   G.screen='play'; G.combat=null;
+  // Check if the defeated enemy was the floor boss
+  if(e.isFloorBoss && e.id===G.levelBossId){
+    G.levelBossDefeated=true;
+    // Spawn descent portal at boss location
+    G.ents.push({tp:E.DESCENT, x:e.x, y:e.y, id:`descent_${G.dungeonLevel}`, gone:false});
+    msg(`🎉 FLOOR GUARDIAN DEFEATED! A descent portal has appeared!`,'ms');
+  }
+  if(e.isFloorBoss && G.dungeonLevel===5 && e.id===G.levelBossId){
+    // Special: final boss triggers Dungeon Master ending
+    setTimeout(()=>triggerDungeonMaster(), 1500);
+  }
   const bossHeader=isBoss?`<p style="color:#ff8040;font-size:11px">⚔️ BOSS DEFEATED! ⚔️</p>`:'';
   showO(isBoss?'🏆 BOSS DEFEATED!':'⚔️ Victory!',
     `${bossHeader}
@@ -1588,12 +1704,10 @@ function trySpawn(){
   if(G.monsterFrenzy)      chance*=1.75;  // frenzy boosts spawns
   if(Math.random()>chance) return;
   const n=G.time.night;
-  let pool;
-  if(n<10) pool=[E.KEE,E.KEE,E.BOK];
-  else if(n<30) pool=[E.KEE,E.BOK,E.BOK,E.SKU];
-  else if(n<60) pool=[E.BOK,E.SKU,E.SKU,E.LIZ];
-  else pool=[E.SKU,E.LIZ,E.LIZ];
-  const tp=pool[Math.floor(Math.random()*pool.length)], mb=MON[tp];
+  const lvlPool=(LEVEL_CFG[G.dungeonLevel||1]||LEVEL_CFG[1]).monPool;
+  const pool=lvlPool;
+  const tp=pool[Math.floor(Math.random()*pool.length)];
+  const mb=MON[tp]||MON[E.BOK];
   const scale=(1+n*0.03)*dm[0], atkS=(1+n*0.02)*dm[1];
   const ang=Math.random()*Math.PI*2, dist=3+Math.floor(Math.random()*3);
   let ex=Math.round(G.pl.x+Math.cos(ang)*dist);
@@ -1610,9 +1724,9 @@ function trySpawn(){
 function purgeMonsters(){
   G.ents=G.ents.filter(e=>{
     // Roaming bokoblins and bosses persist through dawn
-    if(e.roaming||e.isBoss) return true;
+    if(e.roaming||e.isBoss||e.isFloorBoss) return true;
     // Regular monsters disappear at dawn unless very close to player
-    if([E.BOK,E.KEE,E.SKU,E.LIZ].includes(e.tp))
+    if([E.BOK,E.KEE,E.SKU,E.LIZ,E.CHUCHU,E.WIZZROBE,E.DARKKNIGHT,E.PHANTOM].includes(e.tp))
       return Math.abs(e.x-G.pl.x)+Math.abs(e.y-G.pl.y)<3;
     return true;
   });
@@ -1682,7 +1796,7 @@ function checkNightEvents(){
     showO('🔴 BLOOD MOON!',
       `<div style="font-size:36px;margin:6px 0">🌕</div>
        <p style="color:#ff4040;font-size:11px">THE BLOOD MOON RISES!</p>
-       <p>Ancient evil surges through the forest!</p>
+       <p>Ancient evil surges through the dungeon!</p>
        <p style="color:#f08080;font-size:7px">
          ⚠️ Monster spawn rate doubled<br>
          ⚠️ Monsters drop extra rupees<br>
@@ -1690,17 +1804,41 @@ function checkNightEvents(){
       [{t:'Face the Night!',f:'closeO()',cls:'btn-red'}]);
   }
 
-  // ── Boss spawns (one-time triggers) ─────────────────────
-  const g30=Math.max(5,Math.floor(G.totalNights*0.30));
-  const g65=Math.max(10,Math.floor(G.totalNights*0.65));
-  if(!G.bossSpawned[0]&&night>=g30){ G.bossSpawned[0]=true; spawnBoss('gleeok'); }
-  if(!G.bossSpawned[1]&&night>=g65){ G.bossSpawned[1]=true; spawnBoss('darklynel'); }
-
   // ── Random events (~35% chance, 2-night cooldown, skip blood moons) ──
   if(!G.bloodMoon && G.eventCooldown===0 && Math.random()<0.35){
     rollRandomEvent();
     G.eventCooldown=2;
   }
+}
+
+function spawnFloorBoss(){
+  const lvl=G.dungeonLevel;
+  const cfg=LEVEL_CFG[lvl];
+  if(!cfg) return;
+  const bb=BOSSES[cfg.bossType];
+  if(!bb) return;
+  let bx,by,found=false;
+  for(let attempt=0;attempt<500;attempt++){
+    const ang=Math.random()*Math.PI*2, dist=20+Math.floor(Math.random()*18);
+    bx=Math.round(40+Math.cos(ang)*dist);
+    by=Math.round(40+Math.sin(ang)*dist);
+    bx=Math.max(4,Math.min(MW-5,bx)); by=Math.max(4,Math.min(MH-5,by));
+    const t=G.map[by][bx];
+    if(t!==T.WA&&t!==T.TR&&t!==T.DT&&t!==T.TH){ found=true; break; }
+  }
+  if(!found){bx=35;by=15;}
+  const bossId=`floorboss_${lvl}`;
+  G.ents=G.ents.filter(e=>e.id!==bossId);
+  G.ents.push({
+    tp: E.GLEEOK, // reuse GLEEOK entity type for rendering glow; we'll differentiate by isBoss+bossType
+    x:bx, y:by, id:bossId,
+    name:bb.name, isBoss:true, isFloorBoss:true, bossType:cfg.bossType,
+    hp:bb.hp, maxHp:bb.hp, atk:bb.atk, def:bb.def,
+    drops:bb.drops, xp:bb.xp, rMin:bb.rMin||40, rMax:bb.rMax||80,
+  });
+  G.levelBossId=bossId;
+  G.levelBossDefeated=false;
+  msg(`⚠️ The floor guardian ${bb.ic} ${bb.name} lurks somewhere on this floor!`,'md');
 }
 
 function spawnBoss(type){
@@ -1891,6 +2029,69 @@ function triggerVictory(){
   msg(`🚁 RESCUED! Score: ${finalScore.toLocaleString()}`,'mw');
 }
 
+function triggerDungeonMaster(){
+  G.done=true;
+  saveScore();
+  showO('👑 DUNGEON MASTER! 👑',
+    `<div style="font-size:48px;margin:8px 0;animation:triPulse 1.5s ease-out infinite">👑</div>
+     <p style="color:#f0c040;font-size:12px;margin:8px 0">YOU ARE THE DUNGEON MASTER!</p>
+     <p>The Dark Lord has fallen. The dungeon trembles and bows before you.</p>
+     <p>All five floors have been conquered. The cursed dungeon is yours.</p>
+     <p style="color:#60e8ff">Final Score: ${calcScore().toLocaleString()}</p>`,
+    [{t:'🏆 Submit Score', f:'saveScore();renderLeaderboard();closeO()', cls:'btn-tri'},
+     {t:'Play Again',      f:'location.reload()',                        cls:'btn-gold'}]);
+  msg('👑 YOU ARE THE DUNGEON MASTER! The dark power is yours!','mw');
+}
+
+function descendLevel(){
+  const nextLevel=G.dungeonLevel+1;
+  if(nextLevel>5){
+    // Should not happen — final victory is triggered on boss defeat
+    triggerDungeonMaster();
+    return;
+  }
+  const cfg=LEVEL_CFG[nextLevel];
+  showO(`⬇️ Descending to Floor ${nextLevel}`,
+    `<div style="font-size:32px;margin:8px 0">${cfg.icon}</div>
+     <p style="color:#f0c040;font-size:11px">${cfg.name}</p>
+     <p>${cfg.desc}</p>
+     <p style="color:#60e8ff;font-size:7px">Your stats and inventory carry forward.<br>The floor guardian awaits...</p>`,
+    [{t:`⬇️ Descend to Floor ${nextLevel}`, f:'doDescend()', cls:'btn-gold'}]);
+}
+
+function doDescend(){
+  const nextLevel=G.dungeonLevel+1;
+  G.dungeonLevel=nextLevel;
+  G.levelBossDefeated=false;
+  G.levelBossId=null;
+  // Regen the map but keep player stats
+  const savedPl={...G.pl};
+  const savedTriforce=[...G.triforce];
+  const savedBlessing=G.triforceBlessing;
+  const savedOpOpen=[...G.opOpen];
+  const cfg=LEVEL_CFG[nextLevel];
+  // New map
+  const md=genMap();
+  G.map=md.tiles;
+  G.ents=md.ents;
+  G.fog=Array.from({length:MH},()=>Array(MW).fill(true));
+  // Restore player at new camp position
+  G.pl={...savedPl, x:md.cx, y:md.cy, onWater:false};
+  G.triforce=savedTriforce;
+  G.triforceBlessing=savedBlessing;
+  G.opOpen=savedOpOpen;
+  G.bossSpawned=[false,false];
+  G.bloodMoon=false; G.monsterFrenzy=false; G.stormActive=false;
+  G.combat=null; G.screen='play';
+  // Reveal starting area
+  reveal(md.cx,md.cy,4);
+  closeO();
+  spawnFloorBoss();
+  msg(`🏚️ You descend to Floor ${nextLevel}: ${cfg.name}`,'ml');
+  msg(`⚔️ Seek and defeat the floor guardian to continue your descent.`,'mw');
+  draw();
+}
+
 // ╔══════════════════════════════════════════════════════════╗
 // ║                   OVERLAY                               ║
 // ╚══════════════════════════════════════════════════════════╝
@@ -2062,7 +2263,7 @@ setInterval(()=>{
 // ╚══════════════════════════════════════════════════════════╝
 function startGame(){
   const name=(document.getElementById('nameInput').value.trim()||'Hero').substring(0,12);
-  const totalNights=parseInt(document.getElementById('nightSlider').value)||100;
+  const totalNights=9999;
   document.getElementById('nameScreen').style.display='none';
   document.getElementById('app').style.display='flex';
   cvs=document.getElementById('gameCanvas'); ctx=cvs.getContext('2d');
@@ -2073,9 +2274,10 @@ function startGame(){
   }
   resize(); window.addEventListener('resize',resize);
   newGame(name,totalNights,diffKey);
-  msg(`🌲 Welcome, ${name}! Survive ${totalNights} nights. Rescue comes after.`,'ml');
+  msg(`⚔️ Welcome, ${name}! You enter the dungeon. Five floors await.`,'ml');
+  msg('Seek the floor guardian and defeat it to descend deeper.','mw');
   msg('ARROW KEYS/WASD to move · Step on items to collect them.','mi');
-  msg('🪓 Craft Stone Axe (Wood+Stone) to chop trees · 🚣 Find Boats near water.','mw');
+  msg('🪓 Craft Stone Axe (Wood+Stone) to chop through obstacles.','mi');
   msg('🔱 Find all 3 Triforce pieces for a powerful golden blessing!','mw');
 
   // ── D-pad button listeners ──
